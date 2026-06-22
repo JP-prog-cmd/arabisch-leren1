@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="nl" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0F6E56">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Arabisch Lessen">
+<title>Arabisch Lessen</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root {
+  --green:#1D9E75; --green-dark:#0F6E56; --green-light:#E1F5EE; --green-mid:#9FE1CB;
+  --blue:#185FA5; --blue-light:#E6F1FB; --blue-mid:#B5D4F4;
+  --amber:#BA7517; --amber-light:#FAEEDA; --amber-mid:#FAC775;
+  --red:#A32D2D; --red-light:#FCEBEB;
+  --purple:#534AB7; --purple-light:#EEEDFE; --purple-mid:#CECBF6;
+  --text:#1a1a1a; --text-sec:#555; --bg:#f7f7f5; --card:#fff; --border:rgba(0,0,0,0.1);
+  --r:14px; --rsm:9px;
+}
+@media(prefers-color-scheme:dark){
+  :root{--text:#f0f0ee;--text-sec:#aaa;--bg:#111110;--card:#1e1e1c;--border:rgba(255,255,255,0.1);}
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;}
+.app{display:flex;flex-direction:column;height:100%;max-width:430px;margin:0 auto;}
+
+/* HEADER */
+.header{background:var(--green-dark);color:white;padding:env(safe-area-inset-top,12px) 16px 14px;}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.header h1{font-size:17px;font-weight:600;}
+.header-sub{font-size:12px;opacity:0.8;}
+
+/* NAV TABS */
+.tabs{display:flex;background:var(--card);border-bottom:1px solid var(--border);flex-shrink:0;}
+.tab{flex:1;padding:11px 4px;text-align:center;font-size:12px;font-weight:500;color:var(--text-sec);cursor:pointer;border-bottom:2.5px solid transparent;}
+.tab.active{color:var(--green);border-bottom-color:var(--green);}
+
+/* SCREENS */
+.screens{flex:1;overflow:hidden;position:relative;}
+.screen{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;}
+.screen.active{display:block;}
+.screen-pad{padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));}
+
+/* LESSON LIST */
+.lesson-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:12px;}
+.lesson-card:active{opacity:0.75;}
+.lesson-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.lesson-info h3{font-size:14px;font-weight:600;margin-bottom:2px;}
+.lesson-info p{font-size:12px;color:var(--text-sec);}
+.lesson-done{margin-left:auto;color:var(--green);font-size:18px;flex-shrink:0;}
+
+/* LESSON DETAIL */
+.back-btn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--green);cursor:pointer;margin-bottom:14px;font-weight:500;}
+.lesson-title{font-size:20px;font-weight:700;margin-bottom:4px;}
+.lesson-desc{font-size:13px;color:var(--text-sec);margin-bottom:16px;}
+
+/* VOCAB TABLE */
+.vocab-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
+.vocab-table th{font-size:11px;font-weight:600;color:var(--text-sec);text-align:left;padding:6px 8px;background:var(--bg);border-bottom:1px solid var(--border);}
+.vocab-table td{padding:9px 8px;border-bottom:1px solid var(--border);vertical-align:top;}
+.vocab-table tr:last-child td{border-bottom:none;}
+.ar{font-size:20px;direction:rtl;line-height:1.3;}
+.ar-sm{font-size:16px;direction:rtl;}
+.phon{font-size:12px;color:var(--blue);font-style:italic;}
+.nl{font-size:13px;}
+.play-btn{background:none;border:none;cursor:pointer;padding:4px;color:var(--green);font-size:18px;line-height:1;}
+
+/* EXAMPLE SENTENCES */
+.examples-title{font-size:13px;font-weight:600;color:var(--text-sec);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;margin-top:4px;}
+.example-card{background:var(--card);border:1px solid var(--border);border-radius:var(--rsm);padding:12px;margin-bottom:8px;}
+.ex-ar{font-size:18px;direction:rtl;text-align:right;margin-bottom:4px;line-height:1.4;}
+.ex-phon{font-size:12px;color:var(--blue);font-style:italic;margin-bottom:3px;}
+.ex-nl{font-size:13px;color:var(--text-sec);}
+.ex-audio{float:right;background:none;border:none;cursor:pointer;color:var(--green);font-size:16px;padding:2px;}
+
+/* SECTION BLOCKS */
+.section-block{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px;}
+.section-block h4{font-size:14px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;margin-left:6px;}
+.tag-green{background:var(--green-light);color:var(--green-dark);}
+.tag-blue{background:var(--blue-light);color:var(--blue);}
+.tag-amber{background:var(--amber-light);color:var(--amber);}
+.tag-purple{background:var(--purple-light);color:var(--purple);}
+
+/* GRAMMAR PILL GRID */
+.pill-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:4px;}
+.pill{background:var(--bg);border:1px solid var(--border);border-radius:var(--rsm);padding:10px 8px;text-align:center;cursor:pointer;transition:all 0.15s;}
+.pill:active{transform:scale(0.96);}
+.pill .p-ar{font-size:22px;direction:rtl;}
+.pill .p-phon{font-size:11px;color:var(--blue);font-style:italic;margin-top:2px;}
+.pill .p-nl{font-size:11px;color:var(--text-sec);margin-top:1px;}
+
+/* QUIZ */
+.quiz-wrap{padding:0;}
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px 14px;text-align:center;margin-bottom:12px;}
+.quiz-q .q-label{font-size:12px;color:var(--text-sec);margin-bottom:10px;}
+.quiz-q .q-main{font-size:28px;font-weight:700;margin-bottom:6px;}
+.quiz-q .q-main.ar{direction:rtl;font-size:44px;}
+.quiz-q .q-sub{font-size:13px;color:var(--text-sec);}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px;}
+.opt{padding:14px 8px;background:var(--card);border:1px solid var(--border);border-radius:var(--rsm);font-size:13px;font-weight:500;cursor:pointer;text-align:center;transition:all 0.15s;line-height:1.4;}
+.opt:active{background:var(--bg);}
+.opt.correct{background:var(--green-light);border-color:var(--green);color:var(--green-dark);}
+.opt.wrong{background:var(--red-light);border-color:#E24B4A;color:#501313;}
+.opt .opt-ar{font-size:18px;direction:rtl;display:block;margin-bottom:2px;}
+.fb{padding:11px 13px;border-radius:var(--rsm);font-size:13px;font-weight:500;margin-bottom:10px;display:none;}
+.fb.ok{background:var(--green-light);color:var(--green-dark);}
+.fb.fout{background:var(--red-light);color:#501313;}
+.next-btn{width:100%;padding:13px;background:var(--green);color:white;border:none;border-radius:var(--rsm);font-size:15px;font-weight:600;cursor:pointer;display:none;}
+.score-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--rsm);padding:12px;text-align:center;}
+.sc-n{font-size:28px;font-weight:700;}
+.sc-n.g{color:var(--green);}
+.sc-n.b{color:#E24B4A;}
+.sc-l{font-size:11px;color:var(--text-sec);margin-top:2px;}
+
+/* BOTTOM HOME BTN */
+.home-bar{background:var(--card);border-top:1px solid var(--border);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;flex-shrink:0;}
+.home-btn{flex:1;padding:11px;background:var(--bg);border:1px solid var(--border);border-radius:var(--rsm);font-size:13px;font-weight:500;color:var(--text);cursor:pointer;text-align:center;}
+.home-btn.primary{background:var(--green);color:white;border-color:var(--green);}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-top">
+      <h1>Arabisch Lessen</h1>
+      <span style="font-size:20px;direction:rtl;">دُروس</span>
+    </div>
+    <div class="header-sub" id="header-sub">Kies een les om te beginnen</div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" id="tab-lessen-btn" onclick="showMainTab('lessen')">📚 Lessen</div>
+    <div class="tab" id="tab-quiz-btn" onclick="showMainTab('quiz')">🎯 Quiz</div>
+    <div class="tab" id="tab-zoek-btn" onclick="showMainTab('zoek')">🔍 Woordenboek</div>
+  </div>
+  <div class="screens">
+
+    <!-- LESSEN LIJST -->
+    <div class="screen active" id="screen-lessen">
+      <div class="screen-pad" id="lesson-list-wrap"></div>
+      <div class="screen-pad" id="lesson-detail-wrap" style="display:none;"></div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="screen" id="screen-quiz">
+      <div class="screen-pad quiz-wrap" id="quiz-content"></div>
+    </div>
+
+    <!-- WOORDENBOEK -->
+    <div class="screen" id="screen-zoek">
+      <div class="screen-pad">
+        <input id="zoek-input" type="search" placeholder="Zoek Arabisch, fonetisch of Nederlands…" style="width:100%;padding:11px 12px;font-size:14px;border:1px solid var(--border);border-radius:var(--rsm);background:var(--card);color:var(--text);margin-bottom:12px;">
+        <div id="zoek-results"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const LESSEN = [
+{
+  id:'voornaamwoorden',
+  titel:'Voornaamwoorden',
+  icon:'👤',
+  kleur:'#E6F1FB',
+  beschrijving:'Ik, jij, hij, zij, wij — de basis van elke zin',
+  vocab:[
+    {ar:'أنا',phon:'anaa',nl:'ik'},
+    {ar:'إحنا',phon:'iḥna',nl:'wij'},
+    {ar:'إنتَ',phon:'inta',nl:'jij (man)'},
+    {ar:'إنتِ',phon:'inti',nl:'jij (vrouw)'},
+    {ar:'إنتُم',phon:'intom',nl:'jullie'},
+    {ar:'هُوَّ',phon:'huwwa',nl:'hij'},
+    {ar:'هِيَ',phon:'heyya',nl:'zij'},
+    {ar:'هُمَّ',phon:'humma',nl:'zij (meervoud)'},
+  ],
+  zinnen:[
+    {ar:'أنا في كَندَا',phon:'anaa fi kanada',nl:'Ik ben in Canada'},
+    {ar:'إحنا في البيت',phon:'iḥna fi el-beit',nl:'Wij zijn thuis'},
+    {ar:'إنتَ مِش هِنا',phon:'inta mish hina',nl:'Jij bent er niet'},
+    {ar:'إنتِ في البيت',phon:'inti fi el-beit',nl:'Jij bent thuis (vrouw)'},
+    {ar:'إنتُم أحمَد وِ جاك',phon:'intom ahmed wi jack',nl:'Jullie zijn Ahmed en Jack'},
+    {ar:'هُوَّ في الشُغَل',phon:'huwwa fi el-shuġal',nl:'Hij is op het werk'},
+    {ar:'هِيَ في الحَمَّام',phon:'heyya fi el-ḥammaam',nl:'Zij is in de badkamer'},
+    {ar:'هُمَّ مِش في البيت',phon:'humma mish fi el-beit',nl:'Zij zijn niet thuis'},
+  ],
+  notities:[
+    {titel:'مِش = niet',tekst:'Mish is het woord voor ontkenning — gebruik het voor elk zelfstandig naamwoord of locatie.'},
+    {titel:'Geen werkwoord "zijn"',tekst:'In het Arabisch zeg je niet "ik bén". Je zegt gewoon "ik in het huis" — het werkwoord zijn valt weg in de tegenwoordige tijd.'},
+  ]
+},
+{
+  id:'bezittelijk',
+  titel:'Bezittelijke voornaamwoorden',
+  icon:'🏷️',
+  kleur:'#EEEDFE',
+  beschrijving:'Mijn, jouw, zijn, haar — uitgangen achter elk woord',
+  vocab:[
+    {ar:'ـي',phon:'-i',nl:'mijn (bijv. اِسمي = mijn naam)'},
+    {ar:'ـنا',phon:'-na',nl:'ons (bijv. اِسمنا = onze naam)'},
+    {ar:'ـَك',phon:'-ak',nl:'jouw (man) (bijv. اِسمَك)'},
+    {ar:'ـِك',phon:'-ik',nl:'jouw (vrouw) (bijv. اِسمِك)'},
+    {ar:'ـكُم',phon:'-kum',nl:'jullie (bijv. اِسمكُم)'},
+    {ar:'ـُه',phon:'-uh',nl:'zijn (bijv. اِسمُه)'},
+    {ar:'ـها',phon:'-ha',nl:'haar (bijv. اِسمَها)'},
+    {ar:'ـهُم',phon:'-hum',nl:'hun (bijv. اِسمُهُم)'},
+  ],
+  zinnen:[
+    {ar:'اِسمي جيك',phon:'esmi jaik',nl:'Mijn naam is Jack'},
+    {ar:'اِسمَك إيه؟',phon:'esmak eih?',nl:'Wat is jouw naam? (man)'},
+    {ar:'اِسمِك إيه؟',phon:'esmik eih?',nl:'Wat is jouw naam? (vrouw)'},
+    {ar:'اِسمُه مارسِل',phon:'esmuh marsel',nl:'Zijn naam is Marcel'},
+    {ar:'اِسمَها مارِيا',phon:'esmaha maria',nl:'Haar naam is Maria'},
+    {ar:'اِسمنا أحمَد وِ جاك',phon:'esmna ahmed wi jack',nl:'Onze naam is Ahmed en Jack'},
+    {ar:'كَلبَك جَميل',phon:'kalbak gamiil',nl:'Jouw hond is mooi (man)'},
+    {ar:'بيتُه كبير',phon:'beituh kibiir',nl:'Zijn huis is groot'},
+  ],
+  notities:[
+    {titel:'Uitgang plakken',tekst:'Je plakt de uitgang direct achter het woord: اِسم (naam) + ي = اِسمي (mijn naam). Dezelfde logica geldt voor elk zelfstandig naamwoord.'},
+    {titel:'Mannelijk vs vrouwelijk',tekst:'-ak is voor een mannelijke gesprekspartner, -ik voor een vrouwelijke. Luister goed naar wie je aanspreekt!'},
+  ]
+},
+{
+  id:'vragen',
+  titel:'Vraagwoorden',
+  icon:'❓',
+  kleur:'#FAEEDA',
+  beschrijving:'Wat, hoe, waar, wie, welke, hoeveel',
+  vocab:[
+    {ar:'إيه / شُو',phon:'eih / sho',nl:'wat'},
+    {ar:'كيف',phon:'kaif',nl:'hoe'},
+    {ar:'فين / وَين',phon:'fein / wein',nl:'waar'},
+    {ar:'مين',phon:'miin',nl:'wie'},
+    {ar:'أيْ',phon:'ay',nl:'welke'},
+    {ar:'بِكام',phon:'bikaam',nl:'hoeveel (prijs)'},
+    {ar:'كام',phon:'kaam',nl:'hoeveel (aantal)'},
+    {ar:'أد إيه',phon:'ad eih',nl:'hoeveel (hoeveelheid)'},
+    {ar:'الساعة كام',phon:'el-saʕa kaam',nl:'hoe laat'},
+  ],
+  zinnen:[
+    {ar:'شُو اِسمَك؟',phon:'sho esmak?',nl:'Wat is jouw naam?'},
+    {ar:'كيف الجَو في هُولندا؟',phon:'kaif el-jaw fi holanda?',nl:'Hoe is het weer in Nederland?'},
+    {ar:'وَين جاك؟',phon:'wein jack?',nl:'Waar is Jack?'},
+    {ar:'مين إنتَ؟',phon:'miin inta?',nl:'Wie ben jij?'},
+    {ar:'إنتَ في أيْ بيت؟',phon:'inta fi ay beit?',nl:'In welk huis ben jij?'},
+    {ar:'بِكام كَلبَك؟',phon:'bikaam kalbak?',nl:'Hoeveel kost jouw hond?'},
+    {ar:'كام كَلب في بيتَك؟',phon:'kaam kalb fi beitak?',nl:'Hoeveel honden heb je thuis?'},
+    {ar:'الساعة كام دِلوْقتي؟',phon:'el-saʕa kaam dilwaʔti?',nl:'Hoe laat is het nu?'},
+    {ar:'أد إيه رُز عايِز؟',phon:'ad eih ruzz ʕaayez?',nl:'Hoeveel rijst wil je?'},
+  ],
+  notities:[
+    {titel:'إيه vs شُو',tekst:'إيه (eih) is Egyptisch Arabisch, شُو (sho) is Levantijns (Syrië/Libanon). Je leraar gebruikt beide — beide zijn correct.'},
+    {titel:'كام vs بِكام',tekst:'كام vraagt naar een getal (aantal). بِكام vraagt naar een prijs. Denk: بِـ = "voor" → voor hoeveel?'},
+  ]
+},
+{
+  id:'familie',
+  titel:'Familie',
+  icon:'👨‍👩‍👧‍👦',
+  kleur:'#E1F5EE',
+  beschrijving:'Opa, oma, vader, moeder, kinderen, ooms',
+  vocab:[
+    {ar:'جِد',phon:'gedd',nl:'opa'},
+    {ar:'جِدَّة',phon:'gedda',nl:'oma'},
+    {ar:'أب / وَالِد',phon:'ab / waalid',nl:'vader'},
+    {ar:'أُم',phon:'omm',nl:'moeder'},
+    {ar:'وَلَد',phon:'walad',nl:'jongen / zoon'},
+    {ar:'بِنت',phon:'bint',nl:'meisje / dochter'},
+    {ar:'عَم',phon:'ʕamm',nl:'oom (van vaders kant)'},
+    {ar:'خال',phon:'khaal',nl:'oom (van moeders kant)'},
+  ],
+  zinnen:[
+    {ar:'إيجين وَلَد جيك',phon:'eigin walad jaik',nl:'Eugen is de zoon van Jack'},
+    {ar:'جيك وَالِد إيجين',phon:'jaik waalid eigin',nl:'Jack is de vader van Eugen'},
+    {ar:'جيك مِش عَندُه بِنت',phon:'jaik mish ʕanduh bint',nl:'Jack heeft geen dochter'},
+    {ar:'إيجين عَندُه عَم؟',phon:'eigin ʕanduh ʕamm?',nl:'Heeft Eugen een oom (vaderszijde)?'},
+    {ar:'أيوَه، اِسمُه مارسِل',phon:'aywa, esmuh marsel',nl:'Ja, zijn naam is Marcel'},
+    {ar:'إيجين عَندُه خال؟',phon:'eigin ʕanduh khaal?',nl:'Heeft Eugen een oom (moederszijde)?'},
+    {ar:'أيوَه، اِسمُه مارك',phon:'aywa, esmuh mark',nl:'Ja, zijn naam is Mark'},
+    {ar:'أنا جِد وِ أب',phon:'ana gedd wi ab',nl:'Ik ben opa én vader'},
+  ],
+  notities:[
+    {titel:'عَم vs خال',tekst:'عَم (ʕamm) is de broer van je vader. خال (khaal) is de broer van je moeder. Het Arabisch maakt dit onderscheid altijd — net als bij tante (عَمَّة vs خَالَة).'},
+    {titel:'أيوَه = ja',tekst:'أيوَه (aywa) of نَعَم (naʕam) — beide betekenen "ja". Aywa is informeler en heel gangbaar in de spreektaal.'},
+  ]
+},
+{
+  id:'huis',
+  titel:'Het huis',
+  icon:'🏠',
+  kleur:'#FBEAF0',
+  beschrijving:'Kamers, meubels, keuken en badkamer',
+  vocab:[
+    {ar:'بيت',phon:'beit',nl:'huis'},
+    {ar:'شَقَّة',phon:'shaʔʔa',nl:'appartement'},
+    {ar:'أُوضَة',phon:'ouda',nl:'kamer'},
+    {ar:'أُوَض',phon:'uwad',nl:'kamers (mv.)'},
+    {ar:'أُوضِة النُوم',phon:'oudit el-noom',nl:'slaapkamer'},
+    {ar:'أُوضِة السُفرَة',phon:'oudit el-sofra',nl:'eetkamer'},
+    {ar:'أُوضِة المَعيشَة',phon:'oudit el-maʕisha',nl:'woonkamer'},
+    {ar:'المَطبَخ',phon:'el-matbakh',nl:'keuken'},
+    {ar:'حَمَّام',phon:'ḥammaam',nl:'badkamer'},
+    {ar:'سِرير',phon:'siriir',nl:'bed'},
+    {ar:'كُومودِينو',phon:'kumodiino',nl:'nachtkastje'},
+    {ar:'دُولاب الهِدوم',phon:'dulaab el-hidoom',nl:'kledingkast'},
+    {ar:'دُولاب',phon:'dulaab',nl:'kast (algemeen)'},
+    {ar:'أباجورَة',phon:'abajoora',nl:'lamp / schemerlamp'},
+    {ar:'نيش',phon:'nish',nl:'vitrinekast'},
+    {ar:'تَرابيزَة',phon:'tarabeiza',nl:'tafel'},
+    {ar:'كُرسِي',phon:'kursi',nl:'stoel'},
+    {ar:'كَراسي',phon:'karaasi',nl:'stoelen (mv.)'},
+    {ar:'بُوفيه',phon:'bufee',nl:'buffetkast'},
+    {ar:'سِجّادَة',phon:'sigaada',nl:'tapijt'},
+    {ar:'سِجّاد',phon:'sigaad',nl:'tapijten (mv.)'},
+    {ar:'كَنَبَة',phon:'kanaba',nl:'bank / sofa'},
+    {ar:'نَجَفَة',phon:'nagafa',nl:'kroonluchter'},
+    {ar:'تِليفزون',phon:'tilifizyon',nl:'televisie'},
+    {ar:'تَلَّاجَة',phon:'tallaaga',nl:'koelkast'},
+    {ar:'فُرن',phon:'forn',nl:'oven'},
+    {ar:'بُوتَجاز',phon:'butagaz',nl:'gasfornuis / kookplaat'},
+    {ar:'حَنَفِيَّة',phon:'ḥanafiyya',nl:'kraan'},
+    {ar:'حَلَّة',phon:'ḥalla',nl:'pot'},
+    {ar:'حِلَل',phon:'ḥilal',nl:'potten (mv.)'},
+    {ar:'بانِيُو',phon:'baanyo',nl:'bad / badkuip'},
+    {ar:'دُش',phon:'dush',nl:'douche'},
+    {ar:'قاعِدِة حَمَّام',phon:'qaʕdit ḥammaam',nl:'toilet'},
+    {ar:'غَسَّالَة',phon:'ghassaala',nl:'wasmachine'},
+    {ar:'غَسَّالِة أطْباق',phon:'ghassalit atbaaq',nl:'vaatwasser'},
+    {ar:'عَفْش',phon:'ʕafsh',nl:'meubilair'},
+  ],
+  zinnen:[
+    {ar:'أنا عَندي خَمَس أُوَض في بيتي',phon:'ana ʕandi khams uwad fi beiti',nl:'Ik heb vijf kamers in mijn huis'},
+    {ar:'أنا عَندي سِرير كِبير',phon:'ana ʕandi siriir kibiir',nl:'Ik heb een groot bed'},
+    {ar:'أنا مِش عَندي أباجورَة في بيتي',phon:'ana mish ʕandi abajoora fi beiti',nl:'Ik heb geen lamp in mijn huis'},
+    {ar:'أنا عايِز تَلاتَة أباجورَة مِن أمازون',phon:'ana ʕaayez talaata abajoora min amazon',nl:'Ik wil drie lampen van Amazon'},
+    {ar:'إنتَ عَندَك نيش كِبير أوْ صُغيَّر؟',phon:'inta ʕandak nish kibiir aw sughayyar?',nl:'Heb jij een grote of kleine vitrinekast?'},
+    {ar:'أنا عَندي تَلَّاجَة إل جي في مَطبَخِي',phon:'ana ʕandi tallaaga LG fi matbakhi',nl:'Ik heb een LG koelkast in mijn keuken'},
+    {ar:'أنا عَندي فُرن كَهرَبا مِش غاز',phon:'ana ʕandi forn kahraba mish ghaz',nl:'Ik heb een elektrische oven, geen gas'},
+    {ar:'أنا عَندي بُوتَجاز خَمَس عِيُون',phon:'ana ʕandi butagaz khamas ʕuyuun',nl:'Ik heb een kookplaat met vijf pitten'},
+    {ar:'كام حَلَّة عَندَك في بيتَك؟',phon:'kaam ḥalla ʕandak fi beitak?',nl:'Hoeveel potten heb jij thuis?'},
+    {ar:'أنا عَندي أكتَر مِن عَشَر حِلَل',phon:'ana ʕandi aktar min ʕashar ḥilal',nl:'Ik heb meer dan tien potten'},
+    {ar:'أنا مِش عَندي قاعِدِة حَمَّام بَس أنا مِحتاج واحدة',phon:'ana mish ʕandi qaʕdit ḥammaam, bas ana miḥtaag waḥda',nl:'Ik heb geen toilet maar ik heb er één nodig'},
+    {ar:'أنا عَندي غَسَّالِة أطْباق لِـ خَمَسَة أشْخاص',phon:'ana ʕandi ghassalit atbaaq li khamsa ashkhaas',nl:'Ik heb een vaatwasser voor vijf personen'},
+  ],
+  notities:[
+    {titel:'عَندي = ik heb',tekst:'Letterlijk: "bij mij". عَندي (ʕandi) = ik heb. عَندَك (ʕandak) = jij hebt (man). عَندِك (ʕandik) = jij hebt (vrouw). عَندُه (ʕanduh) = hij heeft.'},
+    {titel:'Aanwijzend: دا / دِي / دُول',tekst:'دا (da) = deze/dit (mannelijk). دِي (di) = deze/dit (vrouwelijk). دُول (dool) = deze (meervoud).'},
+    {titel:'كِبير vs صُغيَّر',tekst:'كِبير (kibiir) = groot. صُغيَّر (sughayyar) = klein. Deze twee woorden kom je overal tegen.'},
+  ]
+},
+];
+
+// Alle woorden plat voor woordenboek
+const ALL_WORDS = [];
+LESSEN.forEach(les => {
+  les.vocab.forEach(v => ALL_WORDS.push({...v, les:les.titel}));
+  les.zinnen.forEach(z => ALL_WORDS.push({...z, les:les.titel, isZin:true}));
+});
+
+// ============================================================
+// STATE
+// ============================================================
+let huidigeLes = null;
+let quizLes = null;
+let quizItems = [];
+let quizIdx = 0;
+let quizGoed = 0;
+let quizFout = 0;
+let quizBeantwoord = false;
+let quizType = 'ar2nl'; // ar2nl | nl2ar | phon2ar
+let voltooid = new Set(JSON.parse(localStorage.getItem('lessen_done')||'[]'));
+
+// ============================================================
+// SPEECH
+// ============================================================
+function speak(tekst, lang='ar-SA'){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(tekst);
+  u.lang = lang; u.rate = 0.8;
+  window.speechSynthesis.speak(u);
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function showMainTab(naam){
+  ['lessen','quiz','zoek'].forEach(t=>{
+    document.getElementById('tab-'+t+'-btn').classList.toggle('active',t===naam);
+    document.getElementById('screen-'+t).classList.toggle('active',t===naam);
+  });
+  if(naam==='quiz' && !quizLes) initQuizKeuze();
+  if(naam==='zoek') renderZoek('');
+  document.getElementById('header-sub').textContent =
+    naam==='lessen' ? 'Kies een les om te beginnen' :
+    naam==='quiz' ? 'Oefen alles wat je geleerd hebt' : 'Zoek elk woord op';
+}
+
+// ============================================================
+// LESSEN LIJST
+// ============================================================
+function renderLessenLijst(){
+  const wrap = document.getElementById('lesson-list-wrap');
+  wrap.innerHTML = '';
+  LESSEN.forEach(les => {
+    const done = voltooid.has(les.id);
+    const card = document.createElement('div');
+    card.className = 'lesson-card';
+    card.innerHTML = `
+      <div class="lesson-icon" style="background:${les.kleur}">${les.icon}</div>
+      <div class="lesson-info">
+        <h3>${les.titel}</h3>
+        <p>${les.vocab.length} woorden · ${les.zinnen.length} zinnen</p>
+        <p style="font-size:11px;margin-top:2px;">${les.beschrijving}</p>
+      </div>
+      ${done ? '<div class="lesson-done">✓</div>' : ''}
+    `;
+    card.onclick = () => openLes(les);
+    wrap.appendChild(card);
+  });
+}
+
+function openLes(les){
+  huidigeLes = les;
+  document.getElementById('lesson-list-wrap').style.display = 'none';
+  document.getElementById('header-sub').textContent = les.titel;
+  const wrap = document.getElementById('lesson-detail-wrap');
+  wrap.style.display = 'block';
+
+  let html = `
+    <div class="back-btn" onclick="sluitLes()">← Alle lessen</div>
+    <div class="lesson-title">${les.icon} ${les.titel}</div>
+    <div class="lesson-desc">${les.beschrijving}</div>
+  `;
+
+  // VOCAB
+  html += `<div class="section-block">
+    <h4>Woorden <span class="tag tag-blue">${les.vocab.length} stuks</span></h4>
+    <table class="vocab-table">
+      <thead><tr><th>Arabisch</th><th>Fonetisch</th><th>Nederlands</th><th></th></tr></thead>
+      <tbody>`;
+  les.vocab.forEach((v,i) => {
+    html += `<tr>
+      <td><span class="ar">${v.ar}</span></td>
+      <td><span class="phon">${v.phon}</span></td>
+      <td><span class="nl">${v.nl}</span></td>
+      <td><button class="play-btn" onclick="speak('${v.ar.replace(/'/g,"\\'")}')">🔊</button></td>
+    </tr>`;
+  });
+  html += `</tbody></table></div>`;
+
+  // ZINNEN
+  html += `<div class="section-block">
+    <h4>Voorbeeldzinnen <span class="tag tag-green">${les.zinnen.length} zinnen</span></h4>`;
+  les.zinnen.forEach(z => {
+    html += `<div class="example-card">
+      <button class="ex-audio" onclick="speak('${z.ar.replace(/'/g,"\\'")}')">🔊</button>
+      <div class="ex-ar">${z.ar}</div>
+      <div class="ex-phon">${z.phon}</div>
+      <div class="ex-nl">${z.nl}</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // NOTITIES
+  if(les.notities && les.notities.length){
+    html += `<div class="section-block">
+      <h4>💡 Grammatica & Tips <span class="tag tag-amber">${les.notities.length}</span></h4>`;
+    les.notities.forEach(n => {
+      html += `<div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);">
+        <div style="font-size:13px;font-weight:600;margin-bottom:3px;">${n.titel}</div>
+        <div style="font-size:13px;color:var(--text-sec);line-height:1.5;">${n.tekst}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // START QUIZ KNOP
+  html += `<button style="width:100%;padding:14px;background:var(--green);color:white;border:none;border-radius:var(--rsm);font-size:15px;font-weight:600;cursor:pointer;margin-top:4px;" onclick="startLesQuiz('${les.id}')">🎯 Oefen deze les</button>`;
+
+  wrap.innerHTML = html;
+  wrap.scrollTop = 0;
+}
+
+function sluitLes(){
+  huidigeLes = null;
+  document.getElementById('lesson-list-wrap').style.display = 'block';
+  document.getElementById('lesson-detail-wrap').style.display = 'none';
+  document.getElementById('header-sub').textContent = 'Kies een les om te beginnen';
+  renderLessenLijst();
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+function initQuizKeuze(){
+  const wrap = document.getElementById('quiz-content');
+  wrap.innerHTML = `
+    <div style="font-size:15px;font-weight:600;margin-bottom:12px;">Kies een les om te oefenen:</div>
+    ${LESSEN.map(l=>`<div class="lesson-card" onclick="startLesQuiz('${l.id}')">
+      <div class="lesson-icon" style="background:${l.kleur}">${l.icon}</div>
+      <div class="lesson-info"><h3>${l.titel}</h3><p>${l.vocab.length} woorden</p></div>
+    </div>`).join('')}
+    <div class="lesson-card" onclick="startLesQuiz('alles')" style="border-color:var(--green);">
+      <div class="lesson-icon" style="background:var(--green-light)">🌟</div>
+      <div class="lesson-info"><h3>Alles door elkaar</h3><p>${ALL_WORDS.filter(w=>!w.isZin).length} woorden uit alle lessen</p></div>
+    </div>
+  `;
+}
+
+function startLesQuiz(lesId){
+  showMainTab('quiz');
+  quizLes = lesId;
+  quizGoed = 0; quizFout = 0;
+  if(lesId === 'alles'){
+    quizItems = ALL_WORDS.filter(w=>!w.isZin).sort(()=>Math.random()-0.5);
+  } else {
+    const les = LESSEN.find(l=>l.id===lesId);
+    quizItems = [...les.vocab].sort(()=>Math.random()-0.5);
+  }
+  quizIdx = 0;
+  quizType = ['ar2nl','nl2ar','phon2ar'][Math.floor(Math.random()*3)];
+  renderQuiz();
+}
+
+function renderQuiz(){
+  if(quizIdx >= quizItems.length){
+    // einde
+    const wrap = document.getElementById('quiz-content');
+    const pct = Math.round(quizGoed/(quizGoed+quizFout)*100)||0;
+    wrap.innerHTML = `
+      <div class="quiz-q" style="padding:32px 14px;">
+        <div style="font-size:48px;margin-bottom:10px;">${pct>=70?'🎉':'💪'}</div>
+        <div style="font-size:20px;font-weight:700;margin-bottom:6px;">${pct}% goed</div>
+        <div style="font-size:14px;color:var(--text-sec);">${quizGoed} goed · ${quizFout} fout</div>
+      </div>
+      <div class="score-row">
+        <div class="sc"><div class="sc-n g">${quizGoed}</div><div class="sc-l">Goed</div></div>
+        <div class="sc"><div class="sc-n b">${quizFout}</div><div class="sc-l">Fout</div></div>
+      </div>
+      <button class="next-btn" style="display:block;margin-top:12px;" onclick="startLesQuiz(quizLes)">🔄 Opnieuw</button>
+      <button class="next-btn" style="display:block;margin-top:8px;background:var(--bg);color:var(--text);border:1px solid var(--border);" onclick="initQuizKeuze()">← Andere les</button>
+    `;
+    if(quizLes !== 'alles') {
+      voltooid.add(quizLes);
+      localStorage.setItem('lessen_done', JSON.stringify([...voltooid]));
+    }
+    return;
+  }
+
+  quizBeantwoord = false;
+  const item = quizItems[quizIdx];
+  // random quiz type per vraag
+  quizType = ['ar2nl','nl2ar','phon2ar'][Math.floor(Math.random()*3)];
+
+  // vraag tekst
+  let vraagTekst='', vraagClass='', vraagSub='';
+  if(quizType==='ar2nl'){
+    vraagTekst=item.ar; vraagClass='q-main ar'; vraagSub='Wat betekent dit in het Nederlands?';
+  } else if(quizType==='nl2ar'){
+    vraagTekst=item.nl; vraagClass='q-main'; vraagSub='Hoe schrijf je dit in het Arabisch?';
+  } else {
+    vraagTekst=item.phon; vraagClass='q-main'; vraagSub='Welke Arabische letter/woord hoort hierbij?';
+  }
+
+  // antwoorden
+  const pool = (quizLes==='alles' ? ALL_WORDS.filter(w=>!w.isZin) : LESSEN.find(l=>l.id===quizLes).vocab)
+    .filter(w=>w.ar!==item.ar).sort(()=>Math.random()-0.5).slice(0,3);
+  const opties = [item, ...pool].sort(()=>Math.random()-0.5);
+
+  const wrap = document.getElementById('quiz-content');
+  wrap.innerHTML = `
+    <div style="font-size:11px;color:var(--text-sec);margin-bottom:8px;text-align:right;">Vraag ${quizIdx+1} / ${quizItems.length}</div>
+    <div class="quiz-q">
+      <div class="q-label">${vraagSub}</div>
+      <div class="${vraagClass}">${vraagTekst}</div>
+      ${quizType==='ar2nl' ? `<button style="margin-top:8px;background:none;border:none;cursor:pointer;color:var(--green);font-size:15px;" onclick="speak('${item.ar.replace(/'/g,"\\'")}')">🔊 Hoor uitspraak</button>` : ''}
+    </div>
+    <div class="opts">
+      ${opties.map(o => {
+        const antwoord = quizType==='ar2nl' ? o.nl : quizType==='nl2ar' ? `<span class="opt-ar">${o.ar}</span>${o.phon}` : `<span class="opt-ar">${o.ar}</span>`;
+        return `<button class="opt" data-ar="${o.ar}" onclick="checkQuiz(this,'${item.ar.replace(/'/g,"\\'")}','${o.ar.replace(/'/g,"\\'")}')">
+          ${antwoord}
+        </button>`;
+      }).join('')}
+    </div>
+    <div class="fb" id="quiz-fb"></div>
+    <button class="next-btn" id="quiz-next" onclick="volgendeQuiz()">Volgende →</button>
+    <div class="score-row">
+      <div class="sc"><div class="sc-n g" id="qg">${quizGoed}</div><div class="sc-l">Goed</div></div>
+      <div class="sc"><div class="sc-n b" id="qf">${quizFout}</div><div class="sc-l">Fout</div></div>
+    </div>
+  `;
+  wrap.scrollTop = 0;
+}
+
+function checkQuiz(btn, correctAr, gekozenAr){
+  if(quizBeantwoord) return;
+  quizBeantwoord = true;
+  speak(correctAr);
+  const fb = document.getElementById('quiz-fb');
+  const correct = gekozenAr === correctAr;
+  if(correct){ btn.classList.add('correct'); quizGoed++; fb.textContent='✓ Correct!'; fb.className='fb ok'; }
+  else {
+    btn.classList.add('wrong'); quizFout++;
+    document.querySelectorAll('.opt').forEach(b=>{ if(b.dataset.ar===correctAr) b.classList.add('correct'); });
+    const correctItem = quizItems.find(i=>i.ar===correctAr);
+    fb.textContent = `✗ Het was: ${correctAr} — ${correctItem?correctItem.nl:''}`;
+    fb.className='fb fout';
+  }
+  fb.style.display='block';
+  document.getElementById('quiz-next').style.display='block';
+  document.getElementById('qg').textContent = quizGoed;
+  document.getElementById('qf').textContent = quizFout;
+}
+
+function volgendeQuiz(){ quizIdx++; renderQuiz(); }
+
+// ============================================================
+// WOORDENBOEK
+// ============================================================
+function renderZoek(q){
+  const res = document.getElementById('zoek-results');
+  if(!q){ res.innerHTML = `<div style="font-size:13px;color:var(--text-sec);text-align:center;padding:20px;">Typ een woord om te zoeken…</div>`; return; }
+  const ql = q.toLowerCase();
+  const hits = ALL_WORDS.filter(w=>
+    w.ar.includes(q) || w.phon.toLowerCase().includes(ql) || w.nl.toLowerCase().includes(ql)
+  ).slice(0,30);
+  if(!hits.length){ res.innerHTML=`<div style="font-size:13px;color:var(--text-sec);padding:12px;">Niets gevonden voor "${q}"</div>`; return; }
+  res.innerHTML = hits.map(w=>`
+    <div class="example-card" style="cursor:pointer;" onclick="speak('${w.ar.replace(/'/g,"\\'")}')">
+      <div style="float:right;color:var(--text-sec);font-size:10px;">${w.les}</div>
+      <div class="ex-ar">${w.ar}</div>
+      <div class="ex-phon">${w.phon}</div>
+      <div class="ex-nl">${w.nl}</div>
+    </div>
+  `).join('');
+}
+
+document.getElementById('zoek-input').addEventListener('input', e => renderZoek(e.target.value.trim()));
+
+// ============================================================
+// INIT
+// ============================================================
+renderLessenLijst();
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
