@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="nl" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0F6E56">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Arabisch">
+<title>Arabisch Leren</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root {
+  --green: #1D9E75;
+  --green-dark: #0F6E56;
+  --green-light: #E1F5EE;
+  --green-mid: #9FE1CB;
+  --red-light: #FCEBEB;
+  --red: #E24B4A;
+  --text: #1a1a1a;
+  --text-sec: #666;
+  --bg: #f8f8f6;
+  --card: #ffffff;
+  --border: rgba(0,0,0,0.1);
+  --radius: 14px;
+  --radius-sm: 9px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #f0f0ee;
+    --text-sec: #aaa;
+    --bg: #111110;
+    --card: #1e1e1c;
+    --border: rgba(255,255,255,0.1);
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
+.app { display: flex; flex-direction: column; height: 100%; max-width: 430px; margin: 0 auto; position: relative; }
+
+/* HEADER */
+.header { background: var(--green-dark); color: white; padding: env(safe-area-inset-top, 12px) 16px 14px; }
+.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.header h1 { font-size: 18px; font-weight: 600; }
+.header-arabic { font-size: 22px; direction: rtl; opacity: 0.85; }
+.prog-wrap { display: flex; align-items: center; gap: 10px; }
+.prog-bar { flex: 1; height: 5px; background: rgba(255,255,255,0.25); border-radius: 3px; }
+.prog-fill { height: 100%; background: var(--green-mid); border-radius: 3px; transition: width 0.5s ease; }
+.prog-label { font-size: 12px; opacity: 0.85; white-space: nowrap; }
+
+/* TABS */
+.tabs { display: flex; background: var(--card); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.tab { flex: 1; padding: 12px 6px; text-align: center; font-size: 13px; font-weight: 500; color: var(--text-sec); cursor: pointer; border-bottom: 2.5px solid transparent; transition: all 0.2s; }
+.tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+/* SCREENS */
+.screens { flex: 1; overflow: hidden; position: relative; }
+.screen { position: absolute; inset: 0; overflow-y: auto; padding: 16px; display: none; -webkit-overflow-scrolling: touch; }
+.screen.active { display: block; }
+
+/* LEREN SCREEN */
+.big-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 16px 20px; text-align: center; margin-bottom: 14px; }
+.letter-counter { font-size: 12px; color: var(--text-sec); margin-bottom: 12px; }
+.arabic-giant { font-size: 100px; line-height: 1.05; direction: rtl; margin-bottom: 6px; }
+.letter-name { font-size: 22px; font-weight: 600; }
+.letter-sound { font-size: 14px; color: var(--text-sec); margin-top: 4px; margin-bottom: 18px; }
+.audio-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; background: var(--green); color: white; border: none; border-radius: 30px; font-size: 15px; font-weight: 500; cursor: pointer; margin-bottom: 20px; transition: transform 0.1s; }
+.audio-btn:active { transform: scale(0.96); }
+.audio-btn svg { width: 18px; height: 18px; fill: white; }
+.forms-title { font-size: 12px; color: var(--text-sec); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.forms-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.form-box { background: var(--bg); border-radius: var(--radius-sm); padding: 10px 4px; text-align: center; }
+.form-ar { font-size: 28px; direction: rtl; line-height: 1.3; }
+.form-lbl { font-size: 10px; color: var(--text-sec); margin-top: 3px; }
+.tip-box { background: var(--green-light); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 13px; color: var(--green-dark); margin-top: 14px; text-align: left; }
+.nav-row { display: flex; gap: 10px; }
+.nav-btn { flex: 1; padding: 13px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; color: var(--text); cursor: pointer; transition: all 0.15s; }
+.nav-btn:active { background: var(--bg); }
+.nav-btn.primary { background: var(--green); color: white; border-color: var(--green); }
+.nav-btn.primary:active { background: var(--green-dark); }
+.learned-badge { text-align: center; margin-top: 10px; font-size: 13px; color: var(--green); font-weight: 500; min-height: 20px; }
+
+/* QUIZ SCREEN */
+.quiz-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px 16px; text-align: center; margin-bottom: 14px; }
+.quiz-mode-label { font-size: 12px; color: var(--text-sec); margin-bottom: 8px; }
+.quiz-letter { font-size: 88px; direction: rtl; line-height: 1.1; }
+.quiz-audio-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; font-size: 13px; color: var(--text-sec); cursor: pointer; margin-top: 10px; }
+.options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.opt-btn { padding: 16px 10px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 15px; font-weight: 500; color: var(--text); cursor: pointer; transition: all 0.15s; line-height: 1.3; text-align: center; }
+.opt-btn.correct { background: var(--green-light); border-color: var(--green); color: var(--green-dark); }
+.opt-btn.wrong { background: var(--red-light); border-color: var(--red); color: #501313; }
+.opt-btn:active:not(.correct):not(.wrong) { background: var(--bg); }
+.feedback-box { padding: 12px 14px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; margin-bottom: 12px; display: none; }
+.feedback-box.ok { background: var(--green-light); color: var(--green-dark); }
+.feedback-box.fout { background: var(--red-light); color: #501313; }
+.next-quiz-btn { width: 100%; padding: 14px; background: var(--green); color: white; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 600; cursor: pointer; display: none; }
+.score-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.score-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; text-align: center; }
+.score-num { font-size: 30px; font-weight: 600; }
+.score-num.good { color: var(--green); }
+.score-num.bad { color: var(--red); }
+.score-lbl { font-size: 12px; color: var(--text-sec); margin-top: 2px; }
+.quiz-toggle { display: flex; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 4px; gap: 4px; margin-bottom: 14px; }
+.quiz-toggle-btn { flex: 1; padding: 8px; font-size: 13px; font-weight: 500; border: none; border-radius: 7px; cursor: pointer; color: var(--text-sec); background: transparent; transition: all 0.2s; }
+.quiz-toggle-btn.active { background: var(--green); color: white; }
+
+/* ALFABET SCREEN */
+.alpha-intro { font-size: 13px; color: var(--text-sec); margin-bottom: 12px; }
+.alpha-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+.alpha-cell { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 4px; text-align: center; cursor: pointer; transition: all 0.15s; }
+.alpha-cell:active { transform: scale(0.95); }
+.alpha-cell.done { background: var(--green-light); border-color: var(--green-mid); }
+.alpha-ar { font-size: 30px; direction: rtl; line-height: 1.2; }
+.alpha-name { font-size: 10px; color: var(--text-sec); margin-top: 3px; }
+.alpha-cell.done .alpha-name { color: var(--green-dark); }
+.group-title { font-size: 12px; font-weight: 600; color: var(--text-sec); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; margin-top: 16px; }
+.group-title:first-child { margin-top: 0; }
+
+/* BOTTOM NAV padding */
+.screen { padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+
+/* Install banner */
+.install-banner { background: var(--green-dark); color: white; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; flex-shrink: 0; }
+.install-banner button { background: white; color: var(--green-dark); border: none; border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.install-banner .close-x { background: transparent; color: rgba(255,255,255,0.7); font-size: 18px; padding: 4px; min-width: 28px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="header-top">
+      <h1>Arabisch Leren</h1>
+      <span class="header-arabic">تعلّم العربية</span>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+      <span class="prog-label" id="prog-label">0 / 28</span>
+    </div>
+  </div>
+
+  <div id="install-banner" class="install-banner" style="display:none;">
+    <span>📲 Installeer als app op je telefoon</span>
+    <div style="display:flex;gap:6px;">
+      <button onclick="installApp()">Installeer</button>
+      <button class="close-x" onclick="hideBanner()">✕</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('leren')" id="tab-leren-btn">📖 Leren</div>
+    <div class="tab" onclick="showTab('quiz')" id="tab-quiz-btn">🎯 Quiz</div>
+    <div class="tab" onclick="showTab('alfabet')" id="tab-alfabet-btn">🔤 Alfabet</div>
+  </div>
+
+  <div class="screens">
+
+    <!-- LEREN -->
+    <div class="screen active" id="screen-leren">
+      <div class="big-card">
+        <div class="letter-counter" id="learn-counter">Letter 1 van 28</div>
+        <div class="arabic-giant" id="learn-ar">ا</div>
+        <div class="letter-name" id="learn-name">Alif</div>
+        <div class="letter-sound" id="learn-sound">Klank: "aa" / "a"</div>
+        <button class="audio-btn" onclick="speakLetter()">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          Hoor uitspraak
+        </button>
+        <div class="forms-title">Vormen in woorden</div>
+        <div class="forms-grid">
+          <div class="form-box"><div class="form-ar" id="lf0">ا</div><div class="form-lbl">Zelfstandig</div></div>
+          <div class="form-box"><div class="form-ar" id="lf1">ا</div><div class="form-lbl">Begin</div></div>
+          <div class="form-box"><div class="form-ar" id="lf2">ـا</div><div class="form-lbl">Midden</div></div>
+          <div class="form-box"><div class="form-ar" id="lf3">ـا</div><div class="form-lbl">Einde</div></div>
+        </div>
+        <div class="tip-box" id="learn-tip">💡 Alif verbindt alleen rechts — hij heeft geen midden- of beginvorm die anders is.</div>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn" onclick="prevLetter()">← Vorige</button>
+        <button class="nav-btn primary" onclick="markLearned()">Geleerd ✓</button>
+        <button class="nav-btn" onclick="nextLetter()">Volgende →</button>
+      </div>
+      <div class="learned-badge" id="learn-badge"></div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="screen" id="screen-quiz">
+      <div class="quiz-toggle">
+        <button class="quiz-toggle-btn active" id="qmode-zien" onclick="setQuizMode('zien')">Zie letter → Naam</button>
+        <button class="quiz-toggle-btn" id="qmode-hoor" onclick="setQuizMode('hoor')">Hoor → Naam</button>
+      </div>
+      <div class="quiz-card">
+        <div class="quiz-mode-label" id="quiz-mode-label">Welke letter is dit?</div>
+        <div class="quiz-letter" id="quiz-ar">ب</div>
+        <button class="quiz-audio-btn" id="quiz-audio-wrap" onclick="speakQuizLetter()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          Speel opnieuw
+        </button>
+      </div>
+      <div class="options-grid" id="options-grid"></div>
+      <div class="feedback-box" id="quiz-feedback"></div>
+      <button class="next-quiz-btn" id="quiz-next" onclick="nextQuiz()">Volgende vraag →</button>
+      <div class="score-row">
+        <div class="score-card"><div class="score-num good" id="q-good">0</div><div class="score-lbl">Goed</div></div>
+        <div class="score-card"><div class="score-num bad" id="q-bad">0</div><div class="score-lbl">Fout</div></div>
+      </div>
+    </div>
+
+    <!-- ALFABET -->
+    <div class="screen" id="screen-alfabet">
+      <p class="alpha-intro">Tik op een letter om te horen en te leren.</p>
+      <div class="alpha-grid" id="alpha-grid"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const letters = [
+  {ar:"ا",name:"Alif",sound:"aa",nl:"aa / a (zoals in arm)",forms:["ا","ا","ـا","ـا"],tip:"Alif verbindt alleen rechts — hij heeft geen aparte begin- of middenvorm."},
+  {ar:"ب",name:"Ba",sound:"ba",nl:"b (zoals in bal)",forms:["ب","بـ","ـبـ","ـب"],tip:"Ba heeft één punt ónder de letter. Denk: punt onder = Ba."},
+  {ar:"ت",name:"Ta",sound:"ta",nl:"t (zoals in tak)",forms:["ت","تـ","ـتـ","ـت"],tip:"Ta heeft twee punten érboven. Ta = Twee punten."},
+  {ar:"ث",name:"Tha",sound:"tha",nl:"th (zoals in het Engelse 'think')",forms:["ث","ثـ","ـثـ","ـث"],tip:"Tha heeft drie punten boven. Tha = Drie (thalatha in het Arabisch!)."},
+  {ar:"ج",name:"Djiem",sound:"djieem",nl:"dzj (zoals in journaal)",forms:["ج","جـ","ـجـ","ـج"],tip:"Djiem heeft een punt ónder de buik van de letter."},
+  {ar:"ح",name:"Ha",sound:"haa",nl:"h (zwaar, vanuit de keel)",forms:["ح","حـ","ـحـ","ـح"],tip:"Ha lijkt op Djiem maar zonder punt — een zware keelklank."},
+  {ar:"خ",name:"Kha",sound:"khaa",nl:"ch (zoals in 'acht')",forms:["خ","خـ","ـخـ","ـخ"],tip:"Kha = Ha met één punt erboven."},
+  {ar:"د",name:"Dal",sound:"daal",nl:"d (zoals in dag)",forms:["د","د","ـد","ـد"],tip:"Dal verbindt alleen rechts — eenvoudige driehoekige vorm."},
+  {ar:"ذ",name:"Dhal",sound:"dhaal",nl:"dh (zoals in het Engelse 'this')",forms:["ذ","ذ","ـذ","ـذ"],tip:"Dhal = Dal met één punt erboven."},
+  {ar:"ر",name:"Ra",sound:"raa",nl:"r (gerold, zoals de Spaanse r)",forms:["ر","ر","ـر","ـر"],tip:"Ra is een vloeiende, ronde letter die rechts verbindt."},
+  {ar:"ز",name:"Zay",sound:"zaay",nl:"z (zoals in zee)",forms:["ز","ز","ـز","ـز"],tip:"Zay = Ra met één punt erboven."},
+  {ar:"س",name:"Sien",sound:"sien",nl:"s (zoals in zon)",forms:["س","سـ","ـسـ","ـس"],tip:"Sien heeft drie 'tanden' onderaan. Denk: Slangetje."},
+  {ar:"ش",name:"Shien",sound:"shien",nl:"sj (zoals in shoppen)",forms:["ش","شـ","ـشـ","ـش"],tip:"Shien = Sien met drie punten erboven."},
+  {ar:"ص",name:"Sad",sound:"saad",nl:"s (zwaar, vanuit de keel)",forms:["ص","صـ","ـصـ","ـص"],tip:"Sad is de 'zware' versie van Sien — een ronde vorm met een staartje."},
+  {ar:"ض",name:"Dad",sound:"daad",nl:"d (zwaar)",forms:["ض","ضـ","ـضـ","ـض"],tip:"Dad = Sad met één punt erboven."},
+  {ar:"ط",name:"Ta (zwaar)",sound:"taa",nl:"t (zwaar)",forms:["ط","طـ","ـطـ","ـط"],tip:"Zware Ta — een ronde kom met een opstaande lijn."},
+  {ar:"ظ",name:"Dha (zwaar)",sound:"dhaa",nl:"dh (zwaar)",forms:["ظ","ظـ","ـظـ","ـظ"],tip:"Zware Dha = zware Ta met één punt erboven."},
+  {ar:"ع",name:"Ayn",sound:"ayn",nl:"'ain — een keelklank zonder equivalent in het Nederlands",forms:["ع","عـ","ـعـ","ـع"],tip:"Ayn is een unieke keelklank. Denk aan een geknepen keel."},
+  {ar:"غ",name:"Ghayn",sound:"ghayn",nl:"gh (zoals de Parijse r)",forms:["غ","غـ","ـغـ","ـغ"],tip:"Ghayn = Ayn met één punt erboven — een gargelend geluid."},
+  {ar:"ف",name:"Fa",sound:"faa",nl:"f (zoals in fiets)",forms:["ف","فـ","ـفـ","ـف"],tip:"Fa heeft één punt boven een ronde kop."},
+  {ar:"ق",name:"Qaf",sound:"qaaf",nl:"q (diepe k vanuit de keel)",forms:["ق","قـ","ـقـ","ـق"],tip:"Qaf heeft twee punten boven een ronde kop — dieper dan Fa."},
+  {ar:"ك",name:"Kaf",sound:"kaaf",nl:"k (zoals in kat)",forms:["ك","كـ","ـكـ","ـك"],tip:"Kaf lijkt op een Latijnse K met een dakje."},
+  {ar:"ل",name:"Lam",sound:"laam",nl:"l (zoals in lamp)",forms:["ل","لـ","ـلـ","ـل"],tip:"Lam is een sierlijke, gebogen letter — de Arabische L."},
+  {ar:"م",name:"Miem",sound:"miem",nl:"m (zoals in maan)",forms:["م","مـ","ـمـ","ـم"],tip:"Miem heeft een kleine ronde kop — denk aan een slakkenhuis."},
+  {ar:"ن",name:"Noen",sound:"noen",nl:"n (zoals in nacht)",forms:["ن","نـ","ـنـ","ـن"],tip:"Noen heeft één punt ónder een kom-vorm."},
+  {ar:"ه",name:"Ha (licht)",sound:"haa licht",nl:"h (zoals in huis)",forms:["ه","هـ","ـهـ","ـه"],tip:"Lichte Ha — een open, ronde vorm. Lichter dan de keelklank Ha."},
+  {ar:"و",name:"Waw",sound:"waaw",nl:"w / oe (zoals in wolf of moe)",forms:["و","و","ـو","ـو"],tip:"Waw verbindt alleen rechts — een kleine ronde letter met een staartje."},
+  {ar:"ي",name:"Ya",sound:"yaa",nl:"y / ie (zoals in ja of zien)",forms:["ي","يـ","ـيـ","ـي"],tip:"Ya heeft twee punten ónder de letter in de zelfstandige vorm."}
+];
+
+let currentLearn = parseInt(localStorage.getItem('currentLearn') || '0');
+let learned = new Set(JSON.parse(localStorage.getItem('learned') || '[]'));
+let qGood = 0, qBad = 0;
+let quizAnswered = false;
+let quizIdx = 0;
+let quizMode = 'zien'; // 'zien' or 'hoor'
+let deferredPrompt = null;
+
+// ---- PWA Install ----
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('install-banner').style.display = 'flex';
+});
+function installApp() {
+  if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; hideBanner(); }
+}
+function hideBanner() { document.getElementById('install-banner').style.display = 'none'; }
+window.addEventListener('appinstalled', hideBanner);
+
+// ---- TABS ----
+function showTab(name) {
+  ['leren','quiz','alfabet'].forEach(t => {
+    document.getElementById('tab-'+t+'-btn').classList.toggle('active', t === name);
+    document.getElementById('screen-'+t).classList.toggle('active', t === name);
+  });
+  if(name==='quiz') setupQuiz();
+  if(name==='alfabet') buildAlpha();
+}
+
+// ---- AUDIO via Web Speech API ----
+function speak(text, lang) {
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = lang || 'ar-SA';
+  u.rate = 0.8;
+  u.pitch = 1;
+  window.speechSynthesis.speak(u);
+}
+
+function speakLetter() {
+  const l = letters[currentLearn];
+  speak(l.ar, 'ar-SA');
+}
+
+function speakQuizLetter() {
+  speak(letters[quizIdx].ar, 'ar-SA');
+}
+
+// ---- LEREN ----
+function renderLearn() {
+  const l = letters[currentLearn];
+  document.getElementById('learn-counter').textContent = 'Letter ' + (currentLearn+1) + ' van 28';
+  document.getElementById('learn-ar').textContent = l.ar;
+  document.getElementById('learn-name').textContent = l.name;
+  document.getElementById('learn-sound').textContent = 'Klank: ' + l.nl;
+  document.getElementById('lf0').textContent = l.forms[0];
+  document.getElementById('lf1').textContent = l.forms[1];
+  document.getElementById('lf2').textContent = l.forms[2];
+  document.getElementById('lf3').textContent = l.forms[3];
+  document.getElementById('learn-tip').textContent = '💡 ' + l.tip;
+  document.getElementById('learn-badge').textContent = learned.has(currentLearn) ? '✓ Al geleerd' : '';
+  document.getElementById('learn-badge').style.color = 'var(--green)';
+  updateProgress();
+  localStorage.setItem('currentLearn', currentLearn);
+}
+
+function prevLetter() {
+  currentLearn = (currentLearn - 1 + letters.length) % letters.length;
+  renderLearn();
+}
+function nextLetter() {
+  currentLearn = (currentLearn + 1) % letters.length;
+  renderLearn();
+}
+function markLearned() {
+  learned.add(currentLearn);
+  localStorage.setItem('learned', JSON.stringify([...learned]));
+  renderLearn();
+  speak(letters[currentLearn].ar, 'ar-SA');
+  setTimeout(nextLetter, 800);
+}
+function updateProgress() {
+  const n = learned.size;
+  document.getElementById('prog-fill').style.width = Math.round(n/28*100)+'%';
+  document.getElementById('prog-label').textContent = n + ' / 28';
+}
+
+// ---- QUIZ ----
+function setQuizMode(mode) {
+  quizMode = mode;
+  document.getElementById('qmode-zien').classList.toggle('active', mode === 'zien');
+  document.getElementById('qmode-hoor').classList.toggle('active', mode === 'hoor');
+  setupQuiz();
+}
+
+function setupQuiz() {
+  quizAnswered = false;
+  quizIdx = Math.floor(Math.random() * letters.length);
+  const l = letters[quizIdx];
+
+  if(quizMode === 'hoor') {
+    document.getElementById('quiz-mode-label').textContent = 'Welke letter hoor je?';
+    document.getElementById('quiz-ar').style.display = 'none';
+    document.getElementById('quiz-audio-wrap').style.display = 'inline-flex';
+    setTimeout(() => speak(l.ar, 'ar-SA'), 300);
+  } else {
+    document.getElementById('quiz-mode-label').textContent = 'Welke letter is dit?';
+    document.getElementById('quiz-ar').style.display = 'block';
+    document.getElementById('quiz-audio-wrap').style.display = 'none';
+  }
+  document.getElementById('quiz-ar').textContent = l.ar;
+  document.getElementById('quiz-feedback').style.display = 'none';
+  document.getElementById('quiz-next').style.display = 'none';
+
+  const wrongIdxs = letters.map((_,i)=>i).filter(i=>i!==quizIdx).sort(()=>Math.random()-0.5).slice(0,3);
+  const all = [quizIdx, ...wrongIdxs].sort(()=>Math.random()-0.5);
+  const grid = document.getElementById('options-grid');
+  grid.innerHTML = '';
+  all.forEach(i => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = '<strong>' + letters[i].name + '</strong><br><span style="font-size:12px;color:var(--text-sec)">' + letters[i].ar + '</span>';
+    btn.onclick = () => checkAnswer(i, btn);
+    grid.appendChild(btn);
+  });
+}
+
+function checkAnswer(chosen, btn) {
+  if(quizAnswered) return;
+  quizAnswered = true;
+  const fb = document.getElementById('quiz-feedback');
+  speak(letters[quizIdx].ar, 'ar-SA');
+  if(chosen === quizIdx) {
+    btn.classList.add('correct');
+    fb.textContent = '✓ Correct! ' + letters[quizIdx].name + ' — ' + letters[quizIdx].nl;
+    fb.className = 'feedback-box ok';
+    qGood++;
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.opt-btn').forEach(b => {
+      if(b.querySelector('strong').textContent === letters[quizIdx].name) b.classList.add('correct');
+    });
+    fb.textContent = '✗ Het was: ' + letters[quizIdx].name + ' — ' + letters[quizIdx].nl;
+    fb.className = 'feedback-box fout';
+    qBad++;
+  }
+  fb.style.display = 'block';
+  document.getElementById('quiz-next').style.display = 'block';
+  document.getElementById('q-good').textContent = qGood;
+  document.getElementById('q-bad').textContent = qBad;
+}
+
+function nextQuiz() { setupQuiz(); }
+
+// ---- ALFABET ----
+function buildAlpha() {
+  const grid = document.getElementById('alpha-grid');
+  grid.innerHTML = '';
+  letters.forEach((l, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'alpha-cell' + (learned.has(i) ? ' done' : '');
+    cell.innerHTML = '<div class="alpha-ar">' + l.ar + '</div><div class="alpha-name">' + l.name + '</div>';
+    cell.onclick = () => {
+      speak(l.ar, 'ar-SA');
+      currentLearn = i;
+      localStorage.setItem('currentLearn', i);
+      showTab('leren');
+      renderLearn();
+    };
+    grid.appendChild(cell);
+  });
+}
+
+// ---- INIT ----
+renderLearn();
+</script>
+
+<!-- Service Worker registration -->
+<script>
+if('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
