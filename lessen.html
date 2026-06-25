@@ -4,652 +4,671 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0F6E56">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Arabisch Lessen">
-<title>Arabisch Lessen</title>
-<link rel="manifest" href="manifest.json">
+<title>Arabische Lessen</title>
 <style>
 :root {
-  --green:#1D9E75; --green-dark:#0F6E56; --green-light:#E1F5EE; --green-mid:#9FE1CB;
-  --blue:#185FA5; --blue-light:#E6F1FB; --blue-mid:#B5D4F4;
-  --amber:#BA7517; --amber-light:#FAEEDA; --amber-mid:#FAC775;
-  --red:#A32D2D; --red-light:#FCEBEB;
-  --purple:#534AB7; --purple-light:#EEEDFE; --purple-mid:#CECBF6;
-  --text:#1a1a1a; --text-sec:#555; --bg:#f7f7f5; --card:#fff; --border:rgba(0,0,0,0.1);
-  --r:14px; --rsm:9px;
+  --green: #1D9E75;
+  --green-dark: #0F6E56;
+  --green-light: #E1F5EE;
+  --text: #1a1a1a;
+  --text-sec: #444;
+  --bg: #f5f5f2;
+  --card: #ffffff;
+  --border: rgba(0,0,0,0.12);
+  --radius: 12px;
 }
-@media(prefers-color-scheme:dark){
-  :root{--text:#f0f0ee;--text-sec:#aaa;--bg:#111110;--card:#1e1e1c;--border:rgba(255,255,255,0.1);}
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;}
-.app{display:flex;flex-direction:column;height:100%;max-width:430px;margin:0 auto;}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+.app { max-width: 480px; margin: 0 auto; padding-bottom: 60px; }
 
 /* HEADER */
-.header{background:var(--green-dark);color:white;padding:env(safe-area-inset-top,12px) 16px 14px;}
-.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
-.header h1{font-size:17px;font-weight:600;}
-.header-sub{font-size:12px;opacity:0.8;}
+.header { background: var(--green-dark); color: white; padding: 16px; }
+.header h1 { font-size: 19px; font-weight: 600; }
+.header p { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+.back-link { display: inline-block; color: rgba(255,255,255,0.85); font-size: 13px; margin-bottom: 8px; text-decoration: none; }
 
-/* NAV TABS */
-.tabs{display:flex;background:var(--card);border-bottom:1px solid var(--border);flex-shrink:0;}
-.tab{flex:1;padding:11px 4px;text-align:center;font-size:12px;font-weight:500;color:var(--text-sec);cursor:pointer;border-bottom:2.5px solid transparent;}
-.tab.active{color:var(--green);border-bottom-color:var(--green);}
+/* NAV */
+.nav { display: flex; gap: 6px; padding: 12px 12px 0; overflow-x: auto; scrollbar-width: none; }
+.nav::-webkit-scrollbar { display: none; }
+.nav-btn { flex-shrink: 0; padding: 7px 14px; border-radius: 20px; border: 1.5px solid #bbb; background: white; color: #333; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+.nav-btn.active { background: var(--green); color: white; border-color: var(--green); }
 
-/* SCREENS */
-.screens{flex:1;overflow:hidden;position:relative;}
-.screen{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;}
-.screen.active{display:block;}
-.screen-pad{padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));}
+/* SECTIONS */
+.section { display: none; padding: 14px 12px; }
+.section.active { display: block; }
 
-/* LESSON LIST */
-.lesson-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:12px;}
-.lesson-card:active{opacity:0.75;}
-.lesson-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-.lesson-info h3{font-size:14px;font-weight:600;margin-bottom:2px;}
-.lesson-info p{font-size:12px;color:var(--text-sec);}
-.lesson-done{margin-left:auto;color:var(--green);font-size:18px;flex-shrink:0;}
-
-/* LESSON DETAIL */
-.back-btn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--green);cursor:pointer;margin-bottom:14px;font-weight:500;}
-.lesson-title{font-size:20px;font-weight:700;margin-bottom:4px;}
-.lesson-desc{font-size:13px;color:var(--text-sec);margin-bottom:16px;}
+/* CARDS */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 12px; }
+.card-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
 
 /* VOCAB TABLE */
-.vocab-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
-.vocab-table th{font-size:11px;font-weight:600;color:var(--text-sec);text-align:left;padding:6px 8px;background:var(--bg);border-bottom:1px solid var(--border);}
-.vocab-table td{padding:9px 8px;border-bottom:1px solid var(--border);vertical-align:top;}
-.vocab-table tr:last-child td{border-bottom:none;}
-.ar{font-size:20px;direction:rtl;line-height:1.3;}
-.ar-sm{font-size:16px;direction:rtl;}
-.phon{font-size:12px;color:var(--blue);font-style:italic;}
-.nl{font-size:13px;}
-.play-btn{background:none;border:none;cursor:pointer;padding:4px;color:var(--green);font-size:18px;line-height:1;}
+.vtable { width: 100%; border-collapse: collapse; font-size: 14px; }
+.vtable th { background: #1D9E75; color: white; padding: 9px 10px; text-align: left; font-weight: 600; }
+.vtable td { padding: 9px 10px; border-bottom: 1px solid #e8e8e6; vertical-align: middle; color: #1a1a1a; }
+.vtable tr:last-child td { border-bottom: none; }
+.vtable tr:nth-child(even) td { background: #f8f8f6; }
+.arabic { font-size: 18px; font-family: 'Segoe UI', Arial, sans-serif; direction: rtl; color: #0F6E56; font-weight: 600; }
+.phonetic { color: #555; font-style: italic; font-size: 13px; }
 
-/* EXAMPLE SENTENCES */
-.examples-title{font-size:13px;font-weight:600;color:var(--text-sec);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;margin-top:4px;}
-.example-card{background:var(--card);border:1px solid var(--border);border-radius:var(--rsm);padding:12px;margin-bottom:8px;}
-.ex-ar{font-size:18px;direction:rtl;text-align:right;margin-bottom:4px;line-height:1.4;}
-.ex-phon{font-size:12px;color:var(--blue);font-style:italic;margin-bottom:3px;}
-.ex-nl{font-size:13px;color:var(--text-sec);}
-.ex-audio{float:right;background:none;border:none;cursor:pointer;color:var(--green);font-size:16px;padding:2px;}
+/* AUDIO BUTTON */
+.audio-btn { background: var(--green-light); border: 1.5px solid var(--green); color: var(--green-dark); border-radius: 8px; padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.audio-btn:active { background: var(--green); color: white; }
+.audio-btn.no-speech { background: #f0f0ee; border-color: #ccc; color: #888; cursor: default; }
 
-/* SECTION BLOCKS */
-.section-block{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px;}
-.section-block h4{font-size:14px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
-.tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;margin-left:6px;}
-.tag-green{background:var(--green-light);color:var(--green-dark);}
-.tag-blue{background:var(--blue-light);color:var(--blue);}
-.tag-amber{background:var(--amber-light);color:var(--amber);}
-.tag-purple{background:var(--purple-light);color:var(--purple);}
+/* EXAMPLE BOX */
+.ex-box { background: #F0FAF6; border-left: 4px solid var(--green); border-radius: 0 8px 8px 0; padding: 10px 14px; margin: 8px 0; }
+.ex-arabic { font-size: 19px; direction: rtl; color: #0F6E56; font-weight: 600; margin-bottom: 4px; }
+.ex-phonetic { font-size: 13px; color: #444; font-style: italic; margin-bottom: 2px; }
+.ex-dutch { font-size: 13px; color: #222; font-weight: 500; }
 
-/* GRAMMAR PILL GRID */
-.pill-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:4px;}
-.pill{background:var(--bg);border:1px solid var(--border);border-radius:var(--rsm);padding:10px 8px;text-align:center;cursor:pointer;transition:all 0.15s;}
-.pill:active{transform:scale(0.96);}
-.pill .p-ar{font-size:22px;direction:rtl;}
-.pill .p-phon{font-size:11px;color:var(--blue);font-style:italic;margin-top:2px;}
-.pill .p-nl{font-size:11px;color:var(--text-sec);margin-top:1px;}
+/* TIP BOX */
+.tip { background: #FFF8E6; border-left: 4px solid #E8A020; border-radius: 0 8px 8px 0; padding: 10px 14px; margin: 8px 0; font-size: 13px; color: #5a3e00; line-height: 1.6; }
+.tip strong { color: #3a2700; }
 
 /* QUIZ */
-.quiz-wrap{padding:0;}
-.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px 14px;text-align:center;margin-bottom:12px;}
-.quiz-q .q-label{font-size:12px;color:var(--text-sec);margin-bottom:10px;}
-.quiz-q .q-main{font-size:28px;font-weight:700;margin-bottom:6px;}
-.quiz-q .q-main.ar{direction:rtl;font-size:44px;}
-.quiz-q .q-sub{font-size:13px;color:var(--text-sec);}
-.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px;}
-.opt{padding:14px 8px;background:var(--card);border:1px solid var(--border);border-radius:var(--rsm);font-size:13px;font-weight:500;cursor:pointer;text-align:center;transition:all 0.15s;line-height:1.4;}
-.opt:active{background:var(--bg);}
-.opt.correct{background:var(--green-light);border-color:var(--green);color:var(--green-dark);}
-.opt.wrong{background:var(--red-light);border-color:#E24B4A;color:#501313;}
-.opt .opt-ar{font-size:18px;direction:rtl;display:block;margin-bottom:2px;}
-.fb{padding:11px 13px;border-radius:var(--rsm);font-size:13px;font-weight:500;margin-bottom:10px;display:none;}
-.fb.ok{background:var(--green-light);color:var(--green-dark);}
-.fb.fout{background:var(--red-light);color:#501313;}
-.next-btn{width:100%;padding:13px;background:var(--green);color:white;border:none;border-radius:var(--rsm);font-size:15px;font-weight:600;cursor:pointer;display:none;}
-.score-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px;}
-.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--rsm);padding:12px;text-align:center;}
-.sc-n{font-size:28px;font-weight:700;}
-.sc-n.g{color:var(--green);}
-.sc-n.b{color:#E24B4A;}
-.sc-l{font-size:11px;color:var(--text-sec);margin-top:2px;}
+.quiz-wrap { }
+.qcard { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; }
+.q-text { font-size: 16px; font-weight: 600; color: #111; margin-bottom: 4px; }
+.q-arabic { font-size: 26px; direction: rtl; color: var(--green-dark); font-weight: 700; margin: 8px 0; }
+.q-opts { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.q-opt { padding: 12px 16px; border: 2px solid #ccc; border-radius: 10px; background: white; font-size: 15px; color: #1a1a1a; cursor: pointer; text-align: left; font-family: inherit; font-weight: 500; }
+.q-opt:active { transform: scale(0.98); }
+.q-opt.correct { background: #D4F5E5; border-color: #1D9E75; color: #0a4a30; }
+.q-opt.wrong { background: #FFE0E0; border-color: #cc3333; color: #7a0000; }
+.q-opt.disabled { cursor: default; }
+.q-feedback { font-size: 14px; padding: 10px 14px; border-radius: 8px; margin-top: 10px; line-height: 1.5; display: none; font-weight: 500; }
+.q-feedback.correct { background: #D4F5E5; color: #0a4a30; border: 1.5px solid #1D9E75; }
+.q-feedback.wrong { background: #FFE0E0; color: #7a0000; border: 1.5px solid #cc3333; }
+.q-next { width: 100%; padding: 13px; border-radius: 10px; background: var(--green); color: white; border: none; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px; display: none; font-family: inherit; }
+.prog-bar { height: 5px; background: #ddd; border-radius: 3px; margin-bottom: 14px; }
+.prog-fill { height: 100%; background: var(--green); border-radius: 3px; transition: width 0.3s; }
+.score-row { display: flex; justify-content: space-between; font-size: 13px; color: #444; font-weight: 500; margin-bottom: 8px; }
+.result-box { text-align: center; padding: 24px 0; }
+.result-num { font-size: 52px; font-weight: 700; color: var(--green); }
+.result-msg { font-size: 16px; color: #444; margin: 6px 0 20px; }
+.restart-btn { width: 100%; padding: 14px; border-radius: 10px; background: var(--green); color: white; border: none; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
 
-/* BOTTOM HOME BTN */
-.home-bar{background:var(--card);border-top:1px solid var(--border);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;flex-shrink:0;}
-.home-btn{flex:1;padding:11px;background:var(--bg);border:1px solid var(--border);border-radius:var(--rsm);font-size:13px;font-weight:500;color:var(--text);cursor:pointer;text-align:center;}
-.home-btn.primary{background:var(--green);color:white;border-color:var(--green);}
+/* SEARCH */
+.search-input { width: 100%; padding: 11px 14px; border: 2px solid #ccc; border-radius: 10px; font-size: 15px; font-family: inherit; margin-bottom: 12px; color: #1a1a1a; background: white; }
+.search-input:focus { outline: none; border-color: var(--green); }
+.dict-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid #eee; }
+.dict-row:last-child { border-bottom: none; }
+.dict-ar { font-size: 20px; direction: rtl; color: var(--green-dark); font-weight: 700; min-width: 60px; text-align: right; }
+.dict-info { flex: 1; }
+.dict-nl { font-size: 14px; font-weight: 600; color: #111; }
+.dict-ph { font-size: 12px; color: #555; font-style: italic; }
+.dict-cat { font-size: 11px; background: var(--green-light); color: var(--green-dark); border-radius: 10px; padding: 2px 8px; white-space: nowrap; font-weight: 600; }
+.no-results { text-align: center; color: #888; padding: 24px; font-size: 14px; }
+
+h2 { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.subtitle { font-size: 13px; color: #555; margin-bottom: 14px; }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+
+/* SPEECH STATUS */
+.speech-status { font-size: 12px; padding: 4px 10px; border-radius: 8px; display: inline-block; margin-bottom: 10px; }
+.speech-ok { background: #D4F5E5; color: #0a4a30; }
+.speech-no { background: #FFE0E0; color: #7a0000; }
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <div class="header-top">
-      <h1>Arabisch Lessen</h1>
-      <span style="font-size:20px;direction:rtl;">دُروس</span>
-    </div>
-    <div class="header-sub" id="header-sub">Kies een les om te beginnen</div>
+    <a href="index.html" class="back-link">← Terug naar alfabet</a>
+    <h1>Arabische Lessen</h1>
+    <p>Lesstof van jouw leraar</p>
   </div>
-  <div class="tabs">
-    <div class="tab active" id="tab-lessen-btn" onclick="showMainTab('lessen')">📚 Lessen</div>
-    <div class="tab" id="tab-quiz-btn" onclick="showMainTab('quiz')">🎯 Quiz</div>
-    <div class="tab" id="tab-zoek-btn" onclick="showMainTab('zoek')">🔍 Woordenboek</div>
+
+  <div class="nav">
+    <button class="nav-btn active" onclick="showTab('voornw')">Voornaamwoorden</button>
+    <button class="nav-btn" onclick="showTab('bezit')">Bezittelijk</button>
+    <button class="nav-btn" onclick="showTab('vragen')">Vragen</button>
+    <button class="nav-btn" onclick="showTab('familie')">Familie</button>
+    <button class="nav-btn" onclick="showTab('huis')">Het huis</button>
+    <button class="nav-btn" onclick="showTab('werkw')">Werkwoorden</button>
+    <button class="nav-btn" onclick="showTab('quiz')">Quiz</button>
+    <button class="nav-btn" onclick="showTab('woordenboek')">Woordenboek</button>
   </div>
-  <div class="screens">
 
-    <!-- LESSEN LIJST -->
-    <div class="screen active" id="screen-lessen">
-      <div class="screen-pad" id="lesson-list-wrap"></div>
-      <div class="screen-pad" id="lesson-detail-wrap" style="display:none;"></div>
+  <!-- VOORNAAMWOORDEN -->
+  <div id="tab-voornw" class="section active">
+    <h2>Voornaamwoorden</h2>
+    <p class="subtitle">Persoonlijke voornaamwoorden in het Egyptisch Arabisch</p>
+    <div id="speech-info-voornw"></div>
+    <div class="card">
+      <table class="vtable">
+        <tr><th>NL</th><th>Arabisch</th><th>Uitspraak</th><th></th></tr>
+        <tr><td>Ik</td><td class="arabic">أنا</td><td class="phonetic">Anaa</td><td><button class="audio-btn" onclick="speak('أنا','ar-EG')">▶ hoor</button></td></tr>
+        <tr><td>Wij</td><td class="arabic">إحنا</td><td class="phonetic">Ehna</td><td><button class="audio-btn" onclick="speak('إحنا','ar-EG')">▶ hoor</button></td></tr>
+        <tr><td>Jij (m)</td><td class="arabic">إنْتَ</td><td class="phonetic">Inta</td><td><button class="audio-btn" onclick="speak('إنتَ','ar-EG')">▶ hoor</button></td></tr>
+        <tr><td>Jij (v)</td><td class="arabic">إنْتِ</td><td class="phonetic">Inti</td><td><button class="audio-btn" onclick="speak('إنتِ','ar-EG')">▶ hoor</button></td></tr>
+        <tr><td>Jullie</td><td class="arabic">إنتُم</td><td class="phonetic">Intom</td><td><button class="audio-btn" onclick="speak('إنتم','ar-EG')">▶ hoor</button></td></tr>
+        <tr><td>Hij</td><td class="arabic">هُوَّ</td><td class="phonetic">Huwwa</td><td><button class="audio-btn" onclick="speak('هوَّ','ar-EG')">▶ hoor</button></td></tr>
+        <tr><td>Zij</td><td class="arabic">هِيَ</td><td class="phonetic">Heyya</td><td><button class="audio-btn" onclick="speak('هيَ','ar-EG')">▶ hoor</button></td></tr>
+        <tr><td>Zij (mv)</td><td class="arabic">هُمَ</td><td class="phonetic">Humma</td><td><button class="audio-btn" onclick="speak('هم','ar-EG')">▶ hoor</button></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Voorbeeldzinnen</div>
+      <div class="ex-box"><div class="ex-arabic">أنا في كَندَا</div><div class="ex-phonetic">Anaa fi canada</div><div class="ex-dutch">Ik ben in Canada</div></div>
+      <div class="ex-box"><div class="ex-arabic">إحنا في البيت</div><div class="ex-phonetic">Ehna fi el-bait</div><div class="ex-dutch">Wij zijn in huis</div></div>
+      <div class="ex-box"><div class="ex-arabic">هُوَّ في الشُغَل</div><div class="ex-phonetic">Huwwa fi el-shuGhal</div><div class="ex-dutch">Hij is op het werk</div></div>
+      <div class="ex-box"><div class="ex-arabic">هِيَ في الحَمام</div><div class="ex-phonetic">Heyya fi el-hammam</div><div class="ex-dutch">Zij is in de badkamer</div></div>
+      <div class="ex-box"><div class="ex-arabic">هُمَ مِش في البيت</div><div class="ex-phonetic">Humma mish fi al-bait</div><div class="ex-dutch">Zij zijn niet thuis</div></div>
+    </div>
+    <div class="tip"><strong>مِش (mish)</strong> = niet. Zet het voor het woord dat je ontkent: مِش في البيت = niet thuis.</div>
+  </div>
+
+  <!-- BEZITTELIJKE VOORNAAMWOORDEN -->
+  <div id="tab-bezit" class="section">
+    <h2>Bezittelijke voornaamwoorden</h2>
+    <p class="subtitle">Plak het achtervoegsel aan een woord vast. Voorbeeld: اِسم (naam)</p>
+    <div class="card">
+      <table class="vtable">
+        <tr><th>NL</th><th>Uitgang</th><th>Voorbeeld (naam)</th><th>Arabisch</th><th></th></tr>
+        <tr><td>Mijn</td><td class="phonetic">+i</td><td class="phonetic">Esmi</td><td class="arabic">اِسمي</td><td><button class="audio-btn" onclick="speak('اسمي','ar-EG')">▶</button></td></tr>
+        <tr><td>Ons</td><td class="phonetic">+na</td><td class="phonetic">Esmna</td><td class="arabic">اِسمنا</td><td><button class="audio-btn" onclick="speak('اسمنا','ar-EG')">▶</button></td></tr>
+        <tr><td>Jouw (m)</td><td class="phonetic">+ak</td><td class="phonetic">Esmak</td><td class="arabic">اِسمَك</td><td><button class="audio-btn" onclick="speak('اسمك','ar-EG')">▶</button></td></tr>
+        <tr><td>Jouw (v)</td><td class="phonetic">+ik</td><td class="phonetic">Esmik</td><td class="arabic">اِسمِك</td><td><button class="audio-btn" onclick="speak('اسمك','ar-EG')">▶</button></td></tr>
+        <tr><td>Jullie</td><td class="phonetic">+kum</td><td class="phonetic">Esmkum</td><td class="arabic">اِسمكُم</td><td><button class="audio-btn" onclick="speak('اسمكم','ar-EG')">▶</button></td></tr>
+        <tr><td>Zijn</td><td class="phonetic">+uh</td><td class="phonetic">Esmuh</td><td class="arabic">اِسمُه</td><td><button class="audio-btn" onclick="speak('اسمه','ar-EG')">▶</button></td></tr>
+        <tr><td>Haar</td><td class="phonetic">+ha</td><td class="phonetic">Esmha</td><td class="arabic">اِسمَها</td><td><button class="audio-btn" onclick="speak('اسمها','ar-EG')">▶</button></td></tr>
+        <tr><td>Hun</td><td class="phonetic">+hum</td><td class="phonetic">Esmhum</td><td class="arabic">اِسمُهُم</td><td><button class="audio-btn" onclick="speak('اسمهم','ar-EG')">▶</button></td></tr>
+      </table>
+    </div>
+    <div class="tip"><strong>اِسم (Esm)</strong> = naam. Je plakt het achtervoegsel direct achter het woord: اِسمي = mijn naam, اِسمَك = jouw naam (mannelijk).</div>
+  </div>
+
+  <!-- VRAAGWOORDEN -->
+  <div id="tab-vragen" class="section">
+    <h2>Vraagwoorden</h2>
+    <p class="subtitle">Vragen stellen in het Egyptisch Arabisch</p>
+    <div class="card">
+      <table class="vtable">
+        <tr><th>NL</th><th>Arabisch</th><th>Uitspraak</th><th></th></tr>
+        <tr><td>Wat</td><td class="arabic">إية / شُو</td><td class="phonetic">Eih / Sho</td><td><button class="audio-btn" onclick="speak('إيه','ar-EG')">▶</button></td></tr>
+        <tr><td>Hoe</td><td class="arabic">كيف</td><td class="phonetic">Kaif</td><td><button class="audio-btn" onclick="speak('كيف','ar-EG')">▶</button></td></tr>
+        <tr><td>Waar</td><td class="arabic">فين / وَين</td><td class="phonetic">Fain / Wain</td><td><button class="audio-btn" onclick="speak('فين','ar-EG')">▶</button></td></tr>
+        <tr><td>Wie</td><td class="arabic">مين</td><td class="phonetic">Miin</td><td><button class="audio-btn" onclick="speak('مين','ar-EG')">▶</button></td></tr>
+        <tr><td>Waarom</td><td class="arabic">ليه</td><td class="phonetic">Laih</td><td><button class="audio-btn" onclick="speak('ليه','ar-EG')">▶</button></td></tr>
+        <tr><td>Welke</td><td class="arabic">أيْ</td><td class="phonetic">Ay</td><td><button class="audio-btn" onclick="speak('أي','ar-EG')">▶</button></td></tr>
+        <tr><td>Hoeveel (prijs)</td><td class="arabic">بِكام</td><td class="phonetic">Bikaam</td><td><button class="audio-btn" onclick="speak('بكام','ar-EG')">▶</button></td></tr>
+        <tr><td>Hoeveel (aantal)</td><td class="arabic">كام</td><td class="phonetic">Kaam</td><td><button class="audio-btn" onclick="speak('كام','ar-EG')">▶</button></td></tr>
+        <tr><td>Hoe laat</td><td class="arabic">الساعة كام</td><td class="phonetic">Es-sa3ah kaam</td><td><button class="audio-btn" onclick="speak('الساعة كام','ar-EG')">▶</button></td></tr>
+        <tr><td>Hoeveel (hoeveelheid)</td><td class="arabic">أد إية</td><td class="phonetic">Ad Eiih</td><td><button class="audio-btn" onclick="speak('قد إيه','ar-EG')">▶</button></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Voorbeeldzinnen</div>
+      <div class="ex-box"><div class="ex-arabic">كيف الجَو في هُولندا؟</div><div class="ex-phonetic">Kaif al-jaw fi holanda?</div><div class="ex-dutch">Hoe is het weer in Nederland?</div></div>
+      <div class="ex-box"><div class="ex-arabic">وَين جاك؟</div><div class="ex-phonetic">Wain jack?</div><div class="ex-dutch">Waar is Jack?</div></div>
+      <div class="ex-box"><div class="ex-arabic">الساعة كام دِلوْقتي؟</div><div class="ex-phonetic">Es-sa3ah kam dilwaqti?</div><div class="ex-dutch">Hoe laat is het nu?</div></div>
+      <div class="ex-box"><div class="ex-arabic">بِكام كَلبَك؟</div><div class="ex-phonetic">Bikaam kalbak?</div><div class="ex-dutch">Hoeveel kost jouw hond?</div></div>
+      <div class="ex-box"><div class="ex-arabic">أد إية رُز عايِز؟</div><div class="ex-phonetic">Ad Eiih ruz 3aayez?</div><div class="ex-dutch">Hoeveel rijst wil je?</div></div>
+      <div class="ex-box"><div class="ex-arabic">ليه إنتَ بتشتغَل مِن سِتَّة الصُبح؟</div><div class="ex-phonetic">Laih inta btashtaghal min sittah es-subh?</div><div class="ex-dutch">Waarom werk jij vanaf zes uur 's ochtends?</div></div>
+    </div>
+    <div class="tip"><strong>كام (kaam)</strong> voor aantallen: كام كَلب = hoeveel honden. <strong>بِكام (bikaam)</strong> voor prijs: بِكام دا = hoeveel kost dit.</div>
+  </div>
+
+  <!-- FAMILIE -->
+  <div id="tab-familie" class="section">
+    <h2>Familie</h2>
+    <p class="subtitle">Familieleden in het Arabisch</p>
+    <div class="card">
+      <table class="vtable">
+        <tr><th>NL</th><th>Arabisch</th><th>Uitspraak</th><th></th></tr>
+        <tr><td>Opa</td><td class="arabic">جِد</td><td class="phonetic">Ged</td><td><button class="audio-btn" onclick="speak('جد','ar-EG')">▶</button></td></tr>
+        <tr><td>Oma</td><td class="arabic">جِدَّة</td><td class="phonetic">Geddah</td><td><button class="audio-btn" onclick="speak('جدة','ar-EG')">▶</button></td></tr>
+        <tr><td>Vader</td><td class="arabic">أب / وَالِد</td><td class="phonetic">Ab / Waalid</td><td><button class="audio-btn" onclick="speak('أب','ar-EG')">▶</button></td></tr>
+        <tr><td>Moeder</td><td class="arabic">أُم</td><td class="phonetic">Om</td><td><button class="audio-btn" onclick="speak('أم','ar-EG')">▶</button></td></tr>
+        <tr><td>Zoon</td><td class="arabic">وَلَد</td><td class="phonetic">Walad</td><td><button class="audio-btn" onclick="speak('ولد','ar-EG')">▶</button></td></tr>
+        <tr><td>Dochter</td><td class="arabic">بِنت</td><td class="phonetic">Bint</td><td><button class="audio-btn" onclick="speak('بنت','ar-EG')">▶</button></td></tr>
+        <tr><td>Oom (vaderszijde)</td><td class="arabic">عَم</td><td class="phonetic">3am</td><td><button class="audio-btn" onclick="speak('عم','ar-EG')">▶</button></td></tr>
+        <tr><td>Oom (moederszijde)</td><td class="arabic">خال</td><td class="phonetic">Khaal</td><td><button class="audio-btn" onclick="speak('خال','ar-EG')">▶</button></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Voorbeeldzinnen</div>
+      <div class="ex-box"><div class="ex-arabic">إيجين عَندُه عَم، اِسمُه مارسِل</div><div class="ex-phonetic">Eigin 3anduh 3am, esmuh marsel</div><div class="ex-dutch">Eigin heeft een oom (vaderszijde), zijn naam is Marcel</div></div>
+      <div class="ex-box"><div class="ex-arabic">جِ بِ مِش أم لَكِن جِد وِ أب</div><div class="ex-phonetic">JP mish om, lakin ged wi ab</div><div class="ex-dutch">JP is geen moeder maar wel opa en vader</div></div>
+    </div>
+    <div class="tip"><strong>عَندُه (3anduh)</strong> = hij heeft. <strong>عَندي (3andi)</strong> = ik heb. <strong>لَكِن (lakin)</strong> = maar. In het Arabisch wordt "zijn" (is/zijn) gewoon weggelaten in de zin.</div>
+  </div>
+
+  <!-- HET HUIS -->
+  <div id="tab-huis" class="section">
+    <h2>Het huis</h2>
+    <p class="subtitle">Kamers en meubels — lesinhoud 10 juni 2026</p>
+
+    <div class="card">
+      <div class="card-title">Soorten woningen</div>
+      <table class="vtable">
+        <tr><th>NL</th><th>Arabisch</th><th>Uitspraak</th><th></th></tr>
+        <tr><td>Huis</td><td class="arabic">بيت</td><td class="phonetic">bait</td><td><button class="audio-btn" onclick="speak('بيت','ar-EG')">▶</button></td></tr>
+        <tr><td>Appartement</td><td class="arabic">شَقَّة</td><td class="phonetic">shaqqa</td><td><button class="audio-btn" onclick="speak('شقة','ar-EG')">▶</button></td></tr>
+        <tr><td>Kamer</td><td class="arabic">أوضِة</td><td class="phonetic">Ouda</td><td><button class="audio-btn" onclick="speak('أوضة','ar-EG')">▶</button></td></tr>
+        <tr><td>Kamers (mv)</td><td class="arabic">أُوَض</td><td class="phonetic">Ouwad</td><td><button class="audio-btn" onclick="speak('أوض','ar-EG')">▶</button></td></tr>
+        <tr><td>Meubilair</td><td class="arabic">عَفْش</td><td class="phonetic">3afsh</td><td><button class="audio-btn" onclick="speak('عفش','ar-EG')">▶</button></td></tr>
+      </table>
     </div>
 
-    <!-- QUIZ -->
-    <div class="screen" id="screen-quiz">
-      <div class="screen-pad quiz-wrap" id="quiz-content"></div>
+    <div class="card">
+      <div class="card-title">🛏️ Slaapkamer — أوضِة النُوم</div>
+      <table class="vtable">
+        <tr><th>NL</th><th>Arabisch</th><th>Uitspraak</th><th></th></tr>
+        <tr><td>Bed</td><td class="arabic">سِرير</td><td class="phonetic">siriir</td><td><button class="audio-btn" onclick="speak('سرير','ar-EG')">▶</button></td></tr>
+        <tr><td>Lamp</td><td class="arabic">أباجورَة</td><td class="phonetic">Abajorah</td><td><button class="audio-btn" onclick="speak('أباجورة','ar-EG')">▶</button></td></tr>
+        <tr><td>Kledingkast</td><td class="arabic">دُولاب الهِدوم</td><td class="phonetic">Dolaab elhidoom</td><td><button class="audio-btn" onclick="speak('دولاب الهدوم','ar-EG')">▶</button></td></tr>
+        <tr><td>Nachtkastje</td><td class="arabic">كُومودِينو</td><td class="phonetic">Komodino</td><td><button class="audio-btn" onclick="speak('كومودينو','ar-EG')">▶</button></td></tr>
+      </table>
     </div>
 
-    <!-- WOORDENBOEK -->
-    <div class="screen" id="screen-zoek">
-      <div class="screen-pad">
-        <input id="zoek-input" type="search" placeholder="Zoek Arabisch, fonetisch of Nederlands…" style="width:100%;padding:11px 12px;font-size:14px;border:1px solid var(--border);border-radius:var(--rsm);background:var(--card);color:var(--text);margin-bottom:12px;">
-        <div id="zoek-results"></div>
+    <div class="card">
+      <div class="card-title">🍽️ Eetkamer — أُوضِة السُفرَة</div>
+      <table class="vtable">
+        <tr><th>NL</th><th>Arabisch</th><th>Uitspraak</th><th></th></tr>
+        <tr><td>Vitrinekast</td><td class="arabic">نيش</td><td class="phonetic">niish</td><td><button class="audio-btn" onclick="speak('نيش','ar-EG')">▶</button></td></tr>
+        <tr><td>Eettafel</td><td class="arabic">ترابيزِة السُفرَة</td><td class="phonetic">Tarabeezit essufra</td><td><button class="audio-btn" onclick="speak('ترابيزة','ar-EG')">▶</button></td></tr>
+        <tr><td>Stoel</td><td class="arabic">كُرسِي</td><td class="phonetic">Kursi</td><td><button class="audio-btn" onclick="speak('كرسي','ar-EG')">▶</button></td></tr>
+        <tr><td>Stoelen (mv)</td><td class="arabic">كَراسي</td><td class="phonetic">Karaasi</td><td><button class="audio-btn" onclick="speak('كراسي','ar-EG')">▶</button></td></tr>
+        <tr><td>Buffetkast</td><td class="arabic">بُوفيه</td><td class="phonetic">Boofaih</td><td><button class="audio-btn" onclick="speak('بوفيه','ar-EG')">▶</button></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🛋️ Woonkamer — أوضِة المَعيشَة</div>
+      <table class="vtable">
+        <tr><th>NL</th><th>Arabisch</th><th>Uitspraak</th><th></th></tr>
+        <tr><td>Tapijt</td><td class="arabic">سِجّادَة</td><td class="phonetic">Siggaada</td><td><button class="audio-btn" onclick="speak('سجادة','ar-EG')">▶</button></td></tr>
+        <tr><td>Tapijten (mv)</td><td class="arabic">سِجّاد</td><td class="phonetic">Siggaad</td><td><button class="audio-btn" onclick="speak('سجاد','ar-EG')">▶</button></td></tr>
+        <tr><td>Bank</td><td class="arabic">كَنَبَة</td><td class="phonetic">Kanaba</td><td><button class="audio-btn" onclick="speak('كنبة','ar-EG')">▶</button></td></tr>
+        <tr><td>Kroonluchter</td><td class="arabic">نَجَفَة</td><td class="phonetic">Nagafa</td><td><button class="audio-btn" onclick="speak('نجفة','ar-EG')">▶</button></td></tr>
+        <tr><td>Gewone lamp</td><td class="arabic">لَمْبَة</td><td class="phonetic">Lamba</td><td><button class="audio-btn" onclick="speak('لمبة','ar-EG')">▶</button></td></tr>
+        <tr><td>Televisie</td><td class="arabic">تِليفزون</td><td class="phonetic">Televizyon</td><td><button class="audio-btn" onclick="speak('تليفزيون','ar-EG')">▶</button></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🍳 Keuken — المَطبَخ</div>
+      <table class="vtable">
+        <tr><th>NL</th><th>Arabisch</th><th>Uitspraak</th><th></th></tr>
+        <tr><td>Koelkast</td><td class="arabic">تَلَّاجَة</td><td class="phonetic">Tallaaga</td><td><button class="audio-btn" onclick="speak('تلاجة','ar-EG')">▶</button></td></tr>
+        <tr><td>Oven</td><td class="arabic">فُرن</td><td class="phonetic">Furn</td><td><button class="audio-btn" onclick="speak('فرن','ar-EG')">▶</button></td></tr>
+        <tr><td>Fornuis</td><td class="arabic">بُوتَجاز</td><td class="phonetic">Bootaaz</td><td><button class="audio-btn" onclick="speak('بوتجاز','ar-EG')">▶</button></td></tr>
+        <tr><td>Kraan</td><td class="arabic">حَنَفِيَّة</td><td class="phonetic">Hanafeyya</td><td><button class="audio-btn" onclick="speak('حنفية','ar-EG')">▶</button></td></tr>
+        <tr><td>Kast</td><td class="arabic">دُولاب</td><td class="phonetic">Dolaab</td><td><button class="audio-btn" onclick="speak('دولاب','ar-EG')">▶</button></td></tr>
+        <tr><td>Pan</td><td class="arabic">حَلَّة</td><td class="phonetic">Halla</td><td><button class="audio-btn" onclick="speak('حلة','ar-EG')">▶</button></td></tr>
+        <tr><td>Pannen (mv)</td><td class="arabic">حِلَل</td><td class="phonetic">Hilal</td><td><button class="audio-btn" onclick="speak('حلل','ar-EG')">▶</button></td></tr>
+        <tr><td>Vaatwasser</td><td class="arabic">غَسَّالِة أطْباق</td><td class="phonetic">Ghassalit Atbaaq</td><td><button class="audio-btn" onclick="speak('غسالة أطباق','ar-EG')">▶</button></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🚿 Badkamer — حَمَّام</div>
+      <table class="vtable">
+        <tr><th>NL</th><th>Arabisch</th><th>Uitspraak</th><th></th></tr>
+        <tr><td>Bad</td><td class="arabic">بانِيُو</td><td class="phonetic">Banyoo</td><td><button class="audio-btn" onclick="speak('بانيو','ar-EG')">▶</button></td></tr>
+        <tr><td>Douche</td><td class="arabic">دُش</td><td class="phonetic">Dush</td><td><button class="audio-btn" onclick="speak('دش','ar-EG')">▶</button></td></tr>
+        <tr><td>Toilet</td><td class="arabic">قاعِدِة حَمَّام</td><td class="phonetic">Qa3dit hammaam</td><td><button class="audio-btn" onclick="speak('قاعدة حمام','ar-EG')">▶</button></td></tr>
+        <tr><td>Wasmachine</td><td class="arabic">غَسَّالَة</td><td class="phonetic">Ghassaala</td><td><button class="audio-btn" onclick="speak('غسالة','ar-EG')">▶</button></td></tr>
+      </table>
+    </div>
+
+    <div class="tip"><strong>عَندي (3andi)</strong> = ik heb. <strong>مِش عَندي</strong> = ik heb niet. <strong>عايِز (3aayez)</strong> = ik wil. <strong>كبير / صُغيَّر</strong> = groot / klein.</div>
+  </div>
+
+  <!-- WERKWOORDEN -->
+  <div id="tab-werkw" class="section">
+    <h2>Werkwoorden & dagelijkse routines</h2>
+    <p class="subtitle">Veelgebruikte werkwoorden met voorbeeldzinnen</p>
+    <div class="card">
+      <table class="vtable">
+        <tr><th>NL</th><th>Arabisch</th><th>Uitspraak</th><th></th></tr>
+        <tr><td>Adviseren</td><td class="arabic">يِنصَح</td><td class="phonetic">Yi-nsa7</td><td><button class="audio-btn" onclick="speak('ينصح','ar-EG')">▶</button></td></tr>
+        <tr><td>Wakker worden</td><td class="arabic">يِصْحَى</td><td class="phonetic">Yi-s-ha</td><td><button class="audio-btn" onclick="speak('يصحى','ar-EG')">▶</button></td></tr>
+        <tr><td>Wassen</td><td class="arabic">يِغسِل</td><td class="phonetic">Yi-Ghsil</td><td><button class="audio-btn" onclick="speak('يغسل','ar-EG')">▶</button></td></tr>
+        <tr><td>Nemen / douchen</td><td class="arabic">يَاخُد</td><td class="phonetic">Ya-khud</td><td><button class="audio-btn" onclick="speak('ياخد','ar-EG')">▶</button></td></tr>
+        <tr><td>Ontbijten</td><td class="arabic">يِفْطَر</td><td class="phonetic">Yi-ft'ar</td><td><button class="audio-btn" onclick="speak('يفطر','ar-EG')">▶</button></td></tr>
+        <tr><td>Werken</td><td class="arabic">يِشتَغَل</td><td class="phonetic">Yi-shtaghal</td><td><button class="audio-btn" onclick="speak('يشتغل','ar-EG')">▶</button></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Voorbeeldzinnen</div>
+      <div class="ex-box"><div class="ex-arabic">الساعَة كام إنتَ تِصحَى؟</div><div class="ex-phonetic">Es-sa3ah kaam inta Tis7a?</div><div class="ex-dutch">Hoe laat word jij wakker?</div></div>
+      <div class="ex-box"><div class="ex-arabic">أصحَى الساعَة سِتَّة الصُبح</div><div class="ex-phonetic">As7a es-sa3ah sittah es-subh</div><div class="ex-dutch">Ik word wakker om zes uur 's ochtends</div></div>
+      <div class="ex-box"><div class="ex-arabic">الصُبح إنتَ تِغسِل وِشَّك وَلَّا لا؟</div><div class="ex-phonetic">Es-sub7 inta tiGhsil wishak walla la?</div><div class="ex-dutch">Was jij 's ochtends je gezicht of niet?</div></div>
+      <div class="ex-box"><div class="ex-arabic">أيْوَة، باغسِل وِشِّي كُل يُوم</div><div class="ex-phonetic">Aywah, baGhsil wishi kul yoom</div><div class="ex-dutch">Ja, ik was mijn gezicht elke dag</div></div>
+      <div class="ex-box"><div class="ex-arabic">أنا باخُد دُش كُل يُوم الصُبح وِ بليل</div><div class="ex-phonetic">Anaa bakhud dush kul yoom es-sub7 wi billiil</div><div class="ex-dutch">Ik douche elke dag 's ochtends en 's avonds</div></div>
+      <div class="ex-box"><div class="ex-arabic">انا بافطَر الساعَة سِتَّة وِ نُص الصُبح</div><div class="ex-phonetic">Anaa baftar es-sa3ah sittah wi nus es-subh</div><div class="ex-dutch">Ik ontbijt om half zeven 's ochtends</div></div>
+    </div>
+    <div class="tip"><strong>با + werkwoord</strong> = ik doe (gewoonlijk). بافطَر = ik ontbijt. باخُد = ik neem. باغسِل = ik was.<br><br><strong>وَلَّا لا (walla la)</strong> = of niet? Aan het einde van een vraag.</div>
+    <div class="card">
+      <div class="card-title">Nuttige woorden</div>
+      <table class="vtable">
+        <tr><th>NL</th><th>Arabisch</th><th>Uitspraak</th></tr>
+        <tr><td>Ochtend</td><td class="arabic">الصُبح</td><td class="phonetic">es-subh</td></tr>
+        <tr><td>Avond</td><td class="arabic">بليل</td><td class="phonetic">billiil</td></tr>
+        <tr><td>Elke dag</td><td class="arabic">كُل يُوم</td><td class="phonetic">kul yoom</td></tr>
+        <tr><td>Elke week</td><td class="arabic">كُل إسبوع</td><td class="phonetic">kul esboo3</td></tr>
+        <tr><td>Na</td><td class="arabic">بَعد</td><td class="phonetic">ba3d</td></tr>
+        <tr><td>Ook</td><td class="arabic">كَمان</td><td class="phonetic">kaman</td></tr>
+        <tr><td>Moeten</td><td class="arabic">لازِم</td><td class="phonetic">laazim</td></tr>
+        <tr><td>Gezicht</td><td class="arabic">وِش</td><td class="phonetic">wish</td></tr>
+        <tr><td>Half (30 min)</td><td class="arabic">وِ نُص</td><td class="phonetic">wi nus</td></tr>
+        <tr><td>Ja</td><td class="arabic">أيْوَة / نَعَم</td><td class="phonetic">Aywah / na3am</td></tr>
+        <tr><td>Nee</td><td class="arabic">لا</td><td class="phonetic">la</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="tab-quiz" class="section">
+    <h2>Quiz — alle lessen</h2>
+    <p class="subtitle">Test je kennis van alle lesinhoud</p>
+    <div id="quiz-main">
+      <div class="score-row"><span id="q-counter">Vraag 1 van 25</span><span id="q-score">Score: 0</span></div>
+      <div class="prog-bar"><div class="prog-fill" id="q-prog" style="width:4%"></div></div>
+      <div class="qcard">
+        <div class="q-text" id="q-text"></div>
+        <div class="q-arabic" id="q-arabic" style="display:none"></div>
+        <div class="q-opts" id="q-opts"></div>
+        <div class="q-feedback" id="q-feedback"></div>
+        <button class="q-next" id="q-next" onclick="nextQ()">Volgende →</button>
       </div>
     </div>
+    <div id="quiz-result" style="display:none">
+      <div class="result-box">
+        <div class="result-num" id="r-score"></div>
+        <div class="result-msg" id="r-msg"></div>
+        <div class="card"><div class="card-title">Resultaat</div><div id="r-detail" style="font-size:14px;color:#444;line-height:1.6"></div></div>
+        <button class="restart-btn" onclick="startQuiz()">Opnieuw proberen</button>
+      </div>
+    </div>
+  </div>
 
+  <!-- WOORDENBOEK -->
+  <div id="tab-woordenboek" class="section">
+    <h2>Woordenboek</h2>
+    <p class="subtitle">Zoek op Nederlands, Arabisch of uitspraak</p>
+    <input class="search-input" id="search-input" type="text" placeholder="Zoek een woord..." oninput="doSearch(this.value)">
+    <div id="dict-results"></div>
   </div>
 </div>
 
 <script>
-// ============================================================
-// DATA
-// ============================================================
-const LESSEN = [
-{
-  id:'voornaamwoorden',
-  titel:'Voornaamwoorden',
-  icon:'👤',
-  kleur:'#E6F1FB',
-  beschrijving:'Ik, jij, hij, zij, wij — de basis van elke zin',
-  vocab:[
-    {ar:'أنا',phon:'anaa',nl:'ik'},
-    {ar:'إحنا',phon:'iḥna',nl:'wij'},
-    {ar:'إنتَ',phon:'inta',nl:'jij (man)'},
-    {ar:'إنتِ',phon:'inti',nl:'jij (vrouw)'},
-    {ar:'إنتُم',phon:'intom',nl:'jullie'},
-    {ar:'هُوَّ',phon:'huwwa',nl:'hij'},
-    {ar:'هِيَ',phon:'heyya',nl:'zij'},
-    {ar:'هُمَّ',phon:'humma',nl:'zij (meervoud)'},
-  ],
-  zinnen:[
-    {ar:'أنا في كَندَا',phon:'anaa fi kanada',nl:'Ik ben in Canada'},
-    {ar:'إحنا في البيت',phon:'iḥna fi el-beit',nl:'Wij zijn thuis'},
-    {ar:'إنتَ مِش هِنا',phon:'inta mish hina',nl:'Jij bent er niet'},
-    {ar:'إنتِ في البيت',phon:'inti fi el-beit',nl:'Jij bent thuis (vrouw)'},
-    {ar:'إنتُم أحمَد وِ جاك',phon:'intom ahmed wi jack',nl:'Jullie zijn Ahmed en Jack'},
-    {ar:'هُوَّ في الشُغَل',phon:'huwwa fi el-shuġal',nl:'Hij is op het werk'},
-    {ar:'هِيَ في الحَمَّام',phon:'heyya fi el-ḥammaam',nl:'Zij is in de badkamer'},
-    {ar:'هُمَّ مِش في البيت',phon:'humma mish fi el-beit',nl:'Zij zijn niet thuis'},
-  ],
-  notities:[
-    {titel:'مِش = niet',tekst:'Mish is het woord voor ontkenning — gebruik het voor elk zelfstandig naamwoord of locatie.'},
-    {titel:'Geen werkwoord "zijn"',tekst:'In het Arabisch zeg je niet "ik bén". Je zegt gewoon "ik in het huis" — het werkwoord zijn valt weg in de tegenwoordige tijd.'},
-  ]
-},
-{
-  id:'bezittelijk',
-  titel:'Bezittelijke voornaamwoorden',
-  icon:'🏷️',
-  kleur:'#EEEDFE',
-  beschrijving:'Mijn, jouw, zijn, haar — uitgangen achter elk woord',
-  vocab:[
-    {ar:'ـي',phon:'-i',nl:'mijn (bijv. اِسمي = mijn naam)'},
-    {ar:'ـنا',phon:'-na',nl:'ons (bijv. اِسمنا = onze naam)'},
-    {ar:'ـَك',phon:'-ak',nl:'jouw (man) (bijv. اِسمَك)'},
-    {ar:'ـِك',phon:'-ik',nl:'jouw (vrouw) (bijv. اِسمِك)'},
-    {ar:'ـكُم',phon:'-kum',nl:'jullie (bijv. اِسمكُم)'},
-    {ar:'ـُه',phon:'-uh',nl:'zijn (bijv. اِسمُه)'},
-    {ar:'ـها',phon:'-ha',nl:'haar (bijv. اِسمَها)'},
-    {ar:'ـهُم',phon:'-hum',nl:'hun (bijv. اِسمُهُم)'},
-  ],
-  zinnen:[
-    {ar:'اِسمي جيك',phon:'esmi jaik',nl:'Mijn naam is Jack'},
-    {ar:'اِسمَك إيه؟',phon:'esmak eih?',nl:'Wat is jouw naam? (man)'},
-    {ar:'اِسمِك إيه؟',phon:'esmik eih?',nl:'Wat is jouw naam? (vrouw)'},
-    {ar:'اِسمُه مارسِل',phon:'esmuh marsel',nl:'Zijn naam is Marcel'},
-    {ar:'اِسمَها مارِيا',phon:'esmaha maria',nl:'Haar naam is Maria'},
-    {ar:'اِسمنا أحمَد وِ جاك',phon:'esmna ahmed wi jack',nl:'Onze naam is Ahmed en Jack'},
-    {ar:'كَلبَك جَميل',phon:'kalbak gamiil',nl:'Jouw hond is mooi (man)'},
-    {ar:'بيتُه كبير',phon:'beituh kibiir',nl:'Zijn huis is groot'},
-  ],
-  notities:[
-    {titel:'Uitgang plakken',tekst:'Je plakt de uitgang direct achter het woord: اِسم (naam) + ي = اِسمي (mijn naam). Dezelfde logica geldt voor elk zelfstandig naamwoord.'},
-    {titel:'Mannelijk vs vrouwelijk',tekst:'-ak is voor een mannelijke gesprekspartner, -ik voor een vrouwelijke. Luister goed naar wie je aanspreekt!'},
-  ]
-},
-{
-  id:'vragen',
-  titel:'Vraagwoorden',
-  icon:'❓',
-  kleur:'#FAEEDA',
-  beschrijving:'Wat, hoe, waar, wie, welke, hoeveel',
-  vocab:[
-    {ar:'إيه / شُو',phon:'eih / sho',nl:'wat'},
-    {ar:'كيف',phon:'kaif',nl:'hoe'},
-    {ar:'فين / وَين',phon:'fein / wein',nl:'waar'},
-    {ar:'مين',phon:'miin',nl:'wie'},
-    {ar:'أيْ',phon:'ay',nl:'welke'},
-    {ar:'بِكام',phon:'bikaam',nl:'hoeveel (prijs)'},
-    {ar:'كام',phon:'kaam',nl:'hoeveel (aantal)'},
-    {ar:'أد إيه',phon:'ad eih',nl:'hoeveel (hoeveelheid)'},
-    {ar:'الساعة كام',phon:'el-saʕa kaam',nl:'hoe laat'},
-  ],
-  zinnen:[
-    {ar:'شُو اِسمَك؟',phon:'sho esmak?',nl:'Wat is jouw naam?'},
-    {ar:'كيف الجَو في هُولندا؟',phon:'kaif el-jaw fi holanda?',nl:'Hoe is het weer in Nederland?'},
-    {ar:'وَين جاك؟',phon:'wein jack?',nl:'Waar is Jack?'},
-    {ar:'مين إنتَ؟',phon:'miin inta?',nl:'Wie ben jij?'},
-    {ar:'إنتَ في أيْ بيت؟',phon:'inta fi ay beit?',nl:'In welk huis ben jij?'},
-    {ar:'بِكام كَلبَك؟',phon:'bikaam kalbak?',nl:'Hoeveel kost jouw hond?'},
-    {ar:'كام كَلب في بيتَك؟',phon:'kaam kalb fi beitak?',nl:'Hoeveel honden heb je thuis?'},
-    {ar:'الساعة كام دِلوْقتي؟',phon:'el-saʕa kaam dilwaʔti?',nl:'Hoe laat is het nu?'},
-    {ar:'أد إيه رُز عايِز؟',phon:'ad eih ruzz ʕaayez?',nl:'Hoeveel rijst wil je?'},
-  ],
-  notities:[
-    {titel:'إيه vs شُو',tekst:'إيه (eih) is Egyptisch Arabisch, شُو (sho) is Levantijns (Syrië/Libanon). Je leraar gebruikt beide — beide zijn correct.'},
-    {titel:'كام vs بِكام',tekst:'كام vraagt naar een getal (aantal). بِكام vraagt naar een prijs. Denk: بِـ = "voor" → voor hoeveel?'},
-  ]
-},
-{
-  id:'familie',
-  titel:'Familie',
-  icon:'👨‍👩‍👧‍👦',
-  kleur:'#E1F5EE',
-  beschrijving:'Opa, oma, vader, moeder, kinderen, ooms',
-  vocab:[
-    {ar:'جِد',phon:'gedd',nl:'opa'},
-    {ar:'جِدَّة',phon:'gedda',nl:'oma'},
-    {ar:'أب / وَالِد',phon:'ab / waalid',nl:'vader'},
-    {ar:'أُم',phon:'omm',nl:'moeder'},
-    {ar:'وَلَد',phon:'walad',nl:'jongen / zoon'},
-    {ar:'بِنت',phon:'bint',nl:'meisje / dochter'},
-    {ar:'عَم',phon:'ʕamm',nl:'oom (van vaders kant)'},
-    {ar:'خال',phon:'khaal',nl:'oom (van moeders kant)'},
-  ],
-  zinnen:[
-    {ar:'إيجين وَلَد جيك',phon:'eigin walad jaik',nl:'Eugen is de zoon van Jack'},
-    {ar:'جيك وَالِد إيجين',phon:'jaik waalid eigin',nl:'Jack is de vader van Eugen'},
-    {ar:'جيك مِش عَندُه بِنت',phon:'jaik mish ʕanduh bint',nl:'Jack heeft geen dochter'},
-    {ar:'إيجين عَندُه عَم؟',phon:'eigin ʕanduh ʕamm?',nl:'Heeft Eugen een oom (vaderszijde)?'},
-    {ar:'أيوَه، اِسمُه مارسِل',phon:'aywa, esmuh marsel',nl:'Ja, zijn naam is Marcel'},
-    {ar:'إيجين عَندُه خال؟',phon:'eigin ʕanduh khaal?',nl:'Heeft Eugen een oom (moederszijde)?'},
-    {ar:'أيوَه، اِسمُه مارك',phon:'aywa, esmuh mark',nl:'Ja, zijn naam is Mark'},
-    {ar:'أنا جِد وِ أب',phon:'ana gedd wi ab',nl:'Ik ben opa én vader'},
-  ],
-  notities:[
-    {titel:'عَم vs خال',tekst:'عَم (ʕamm) is de broer van je vader. خال (khaal) is de broer van je moeder. Het Arabisch maakt dit onderscheid altijd — net als bij tante (عَمَّة vs خَالَة).'},
-    {titel:'أيوَه = ja',tekst:'أيوَه (aywa) of نَعَم (naʕam) — beide betekenen "ja". Aywa is informeler en heel gangbaar in de spreektaal.'},
-  ]
-},
-{
-  id:'huis',
-  titel:'Het huis',
-  icon:'🏠',
-  kleur:'#FBEAF0',
-  beschrijving:'Kamers, meubels, keuken en badkamer',
-  vocab:[
-    {ar:'بيت',phon:'beit',nl:'huis'},
-    {ar:'شَقَّة',phon:'shaʔʔa',nl:'appartement'},
-    {ar:'أُوضَة',phon:'ouda',nl:'kamer'},
-    {ar:'أُوَض',phon:'uwad',nl:'kamers (mv.)'},
-    {ar:'أُوضِة النُوم',phon:'oudit el-noom',nl:'slaapkamer'},
-    {ar:'أُوضِة السُفرَة',phon:'oudit el-sofra',nl:'eetkamer'},
-    {ar:'أُوضِة المَعيشَة',phon:'oudit el-maʕisha',nl:'woonkamer'},
-    {ar:'المَطبَخ',phon:'el-matbakh',nl:'keuken'},
-    {ar:'حَمَّام',phon:'ḥammaam',nl:'badkamer'},
-    {ar:'سِرير',phon:'siriir',nl:'bed'},
-    {ar:'كُومودِينو',phon:'kumodiino',nl:'nachtkastje'},
-    {ar:'دُولاب الهِدوم',phon:'dulaab el-hidoom',nl:'kledingkast'},
-    {ar:'دُولاب',phon:'dulaab',nl:'kast (algemeen)'},
-    {ar:'أباجورَة',phon:'abajoora',nl:'lamp / schemerlamp'},
-    {ar:'نيش',phon:'nish',nl:'vitrinekast'},
-    {ar:'تَرابيزَة',phon:'tarabeiza',nl:'tafel'},
-    {ar:'كُرسِي',phon:'kursi',nl:'stoel'},
-    {ar:'كَراسي',phon:'karaasi',nl:'stoelen (mv.)'},
-    {ar:'بُوفيه',phon:'bufee',nl:'buffetkast'},
-    {ar:'سِجّادَة',phon:'sigaada',nl:'tapijt'},
-    {ar:'سِجّاد',phon:'sigaad',nl:'tapijten (mv.)'},
-    {ar:'كَنَبَة',phon:'kanaba',nl:'bank / sofa'},
-    {ar:'نَجَفَة',phon:'nagafa',nl:'kroonluchter'},
-    {ar:'تِليفزون',phon:'tilifizyon',nl:'televisie'},
-    {ar:'تَلَّاجَة',phon:'tallaaga',nl:'koelkast'},
-    {ar:'فُرن',phon:'forn',nl:'oven'},
-    {ar:'بُوتَجاز',phon:'butagaz',nl:'gasfornuis / kookplaat'},
-    {ar:'حَنَفِيَّة',phon:'ḥanafiyya',nl:'kraan'},
-    {ar:'حَلَّة',phon:'ḥalla',nl:'pot'},
-    {ar:'حِلَل',phon:'ḥilal',nl:'potten (mv.)'},
-    {ar:'بانِيُو',phon:'baanyo',nl:'bad / badkuip'},
-    {ar:'دُش',phon:'dush',nl:'douche'},
-    {ar:'قاعِدِة حَمَّام',phon:'qaʕdit ḥammaam',nl:'toilet'},
-    {ar:'غَسَّالَة',phon:'ghassaala',nl:'wasmachine'},
-    {ar:'غَسَّالِة أطْباق',phon:'ghassalit atbaaq',nl:'vaatwasser'},
-    {ar:'عَفْش',phon:'ʕafsh',nl:'meubilair'},
-  ],
-  zinnen:[
-    {ar:'أنا عَندي خَمَس أُوَض في بيتي',phon:'ana ʕandi khams uwad fi beiti',nl:'Ik heb vijf kamers in mijn huis'},
-    {ar:'أنا عَندي سِرير كِبير',phon:'ana ʕandi siriir kibiir',nl:'Ik heb een groot bed'},
-    {ar:'أنا مِش عَندي أباجورَة في بيتي',phon:'ana mish ʕandi abajoora fi beiti',nl:'Ik heb geen lamp in mijn huis'},
-    {ar:'أنا عايِز تَلاتَة أباجورَة مِن أمازون',phon:'ana ʕaayez talaata abajoora min amazon',nl:'Ik wil drie lampen van Amazon'},
-    {ar:'إنتَ عَندَك نيش كِبير أوْ صُغيَّر؟',phon:'inta ʕandak nish kibiir aw sughayyar?',nl:'Heb jij een grote of kleine vitrinekast?'},
-    {ar:'أنا عَندي تَلَّاجَة إل جي في مَطبَخِي',phon:'ana ʕandi tallaaga LG fi matbakhi',nl:'Ik heb een LG koelkast in mijn keuken'},
-    {ar:'أنا عَندي فُرن كَهرَبا مِش غاز',phon:'ana ʕandi forn kahraba mish ghaz',nl:'Ik heb een elektrische oven, geen gas'},
-    {ar:'أنا عَندي بُوتَجاز خَمَس عِيُون',phon:'ana ʕandi butagaz khamas ʕuyuun',nl:'Ik heb een kookplaat met vijf pitten'},
-    {ar:'كام حَلَّة عَندَك في بيتَك؟',phon:'kaam ḥalla ʕandak fi beitak?',nl:'Hoeveel potten heb jij thuis?'},
-    {ar:'أنا عَندي أكتَر مِن عَشَر حِلَل',phon:'ana ʕandi aktar min ʕashar ḥilal',nl:'Ik heb meer dan tien potten'},
-    {ar:'أنا مِش عَندي قاعِدِة حَمَّام بَس أنا مِحتاج واحدة',phon:'ana mish ʕandi qaʕdit ḥammaam, bas ana miḥtaag waḥda',nl:'Ik heb geen toilet maar ik heb er één nodig'},
-    {ar:'أنا عَندي غَسَّالِة أطْباق لِـ خَمَسَة أشْخاص',phon:'ana ʕandi ghassalit atbaaq li khamsa ashkhaas',nl:'Ik heb een vaatwasser voor vijf personen'},
-  ],
-  notities:[
-    {titel:'عَندي = ik heb',tekst:'Letterlijk: "bij mij". عَندي (ʕandi) = ik heb. عَندَك (ʕandak) = jij hebt (man). عَندِك (ʕandik) = jij hebt (vrouw). عَندُه (ʕanduh) = hij heeft.'},
-    {titel:'Aanwijzend: دا / دِي / دُول',tekst:'دا (da) = deze/dit (mannelijk). دِي (di) = deze/dit (vrouwelijk). دُول (dool) = deze (meervoud).'},
-    {titel:'كِبير vs صُغيَّر',tekst:'كِبير (kibiir) = groot. صُغيَّر (sughayyar) = klein. Deze twee woorden kom je overal tegen.'},
-  ]
-},
-];
-
-// Alle woorden plat voor woordenboek
-const ALL_WORDS = [];
-LESSEN.forEach(les => {
-  les.vocab.forEach(v => ALL_WORDS.push({...v, les:les.titel}));
-  les.zinnen.forEach(z => ALL_WORDS.push({...z, les:les.titel, isZin:true}));
-});
-
-// ============================================================
-// STATE
-// ============================================================
-let huidigeLes = null;
-let quizLes = null;
-let quizItems = [];
-let quizIdx = 0;
-let quizGoed = 0;
-let quizFout = 0;
-let quizBeantwoord = false;
-let quizType = 'ar2nl'; // ar2nl | nl2ar | phon2ar
-let voltooid = new Set(JSON.parse(localStorage.getItem('lessen_done')||'[]'));
-
-// ============================================================
 // SPEECH
-// ============================================================
-function speak(tekst, lang='ar-SA'){
-  if(!window.speechSynthesis) return;
+let speechOK = false;
+let speechLang = 'ar-EG';
+
+function initSpeech() {
+  if (!('speechSynthesis' in window)) {
+    markNoSpeech(); return;
+  }
+  const trySpeak = () => {
+    const voices = window.speechSynthesis.getVoices();
+    const arVoice = voices.find(v => v.lang.startsWith('ar'));
+    if (arVoice || voices.length > 0) {
+      speechOK = true;
+    } else {
+      markNoSpeech();
+    }
+  };
+  if (window.speechSynthesis.getVoices().length > 0) {
+    trySpeak();
+  } else {
+    window.speechSynthesis.onvoiceschanged = trySpeak;
+    setTimeout(() => { if (!speechOK) markNoSpeech(); }, 2000);
+  }
+}
+
+function markNoSpeech() {
+  speechOK = false;
+  document.querySelectorAll('.audio-btn').forEach(b => {
+    b.textContent = '🔇 geen audio';
+    b.classList.add('no-speech');
+    b.onclick = null;
+  });
+}
+
+function speak(text, lang) {
+  if (!('speechSynthesis' in window)) { alert('Spraak niet beschikbaar op dit apparaat.'); return; }
   window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(tekst);
-  u.lang = lang; u.rate = 0.8;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = lang || 'ar-EG';
+  u.rate = 0.85;
+  const voices = window.speechSynthesis.getVoices();
+  const arVoice = voices.find(v => v.lang.startsWith('ar'));
+  if (arVoice) u.voice = arVoice;
+  u.onerror = () => {};
   window.speechSynthesis.speak(u);
 }
 
-// ============================================================
+initSpeech();
+
 // TABS
-// ============================================================
-function showMainTab(naam){
-  ['lessen','quiz','zoek'].forEach(t=>{
-    document.getElementById('tab-'+t+'-btn').classList.toggle('active',t===naam);
-    document.getElementById('screen-'+t).classList.toggle('active',t===naam);
-  });
-  if(naam==='quiz' && !quizLes) initQuizKeuze();
-  if(naam==='zoek') renderZoek('');
-  document.getElementById('header-sub').textContent =
-    naam==='lessen' ? 'Kies een les om te beginnen' :
-    naam==='quiz' ? 'Oefen alles wat je geleerd hebt' : 'Zoek elk woord op';
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+  if (id === 'quiz' && quizShuffled.length === 0) startQuiz();
+  if (id === 'woordenboek') doSearch('');
 }
 
-// ============================================================
-// LESSEN LIJST
-// ============================================================
-function renderLessenLijst(){
-  const wrap = document.getElementById('lesson-list-wrap');
-  wrap.innerHTML = '';
-  LESSEN.forEach(les => {
-    const done = voltooid.has(les.id);
-    const card = document.createElement('div');
-    card.className = 'lesson-card';
-    card.innerHTML = `
-      <div class="lesson-icon" style="background:${les.kleur}">${les.icon}</div>
-      <div class="lesson-info">
-        <h3>${les.titel}</h3>
-        <p>${les.vocab.length} woorden · ${les.zinnen.length} zinnen</p>
-        <p style="font-size:11px;margin-top:2px;">${les.beschrijving}</p>
-      </div>
-      ${done ? '<div class="lesson-done">✓</div>' : ''}
-    `;
-    card.onclick = () => openLes(les);
-    wrap.appendChild(card);
-  });
-}
+// DICTIONARY DATA
+const allWords = [
+  // Voornaamwoorden
+  { ar:'أنا', ph:'Anaa', nl:'Ik', cat:'Voornaamwoord' },
+  { ar:'إحنا', ph:'Ehna', nl:'Wij', cat:'Voornaamwoord' },
+  { ar:'إنْتَ', ph:'Inta', nl:'Jij (mannelijk)', cat:'Voornaamwoord' },
+  { ar:'إنْتِ', ph:'Inti', nl:'Jij (vrouwelijk)', cat:'Voornaamwoord' },
+  { ar:'إنتُم', ph:'Intom', nl:'Jullie', cat:'Voornaamwoord' },
+  { ar:'هُوَّ', ph:'Huwwa', nl:'Hij', cat:'Voornaamwoord' },
+  { ar:'هِيَ', ph:'Heyya', nl:'Zij', cat:'Voornaamwoord' },
+  { ar:'هُمَ', ph:'Humma', nl:'Zij (meervoud)', cat:'Voornaamwoord' },
+  // Bezittelijk
+  { ar:'اِسمي', ph:'Esmi', nl:'Mijn naam', cat:'Bezittelijk' },
+  { ar:'اِسمَك', ph:'Esmak', nl:'Jouw naam (m)', cat:'Bezittelijk' },
+  { ar:'اِسمِك', ph:'Esmik', nl:'Jouw naam (v)', cat:'Bezittelijk' },
+  { ar:'اِسمُه', ph:'Esmuh', nl:'Zijn naam', cat:'Bezittelijk' },
+  { ar:'اِسمَها', ph:'Esmha', nl:'Haar naam', cat:'Bezittelijk' },
+  // Vraagwoorden
+  { ar:'إية', ph:'Eih', nl:'Wat', cat:'Vraagwoord' },
+  { ar:'كيف', ph:'Kaif', nl:'Hoe', cat:'Vraagwoord' },
+  { ar:'فين', ph:'Fain', nl:'Waar', cat:'Vraagwoord' },
+  { ar:'مين', ph:'Miin', nl:'Wie', cat:'Vraagwoord' },
+  { ar:'ليه', ph:'Laih', nl:'Waarom', cat:'Vraagwoord' },
+  { ar:'بِكام', ph:'Bikaam', nl:'Hoeveel (prijs)', cat:'Vraagwoord' },
+  { ar:'كام', ph:'Kaam', nl:'Hoeveel (aantal)', cat:'Vraagwoord' },
+  { ar:'الساعة كام', ph:'Es-sa3ah kaam', nl:'Hoe laat', cat:'Vraagwoord' },
+  // Familie
+  { ar:'جِد', ph:'Ged', nl:'Opa', cat:'Familie' },
+  { ar:'جِدَّة', ph:'Geddah', nl:'Oma', cat:'Familie' },
+  { ar:'أب', ph:'Ab', nl:'Vader', cat:'Familie' },
+  { ar:'أُم', ph:'Om', nl:'Moeder', cat:'Familie' },
+  { ar:'وَلَد', ph:'Walad', nl:'Zoon', cat:'Familie' },
+  { ar:'بِنت', ph:'Bint', nl:'Dochter', cat:'Familie' },
+  { ar:'عَم', ph:'3am', nl:'Oom (vaderszijde)', cat:'Familie' },
+  { ar:'خال', ph:'Khaal', nl:'Oom (moederszijde)', cat:'Familie' },
+  // Huis
+  { ar:'بيت', ph:'bait', nl:'Huis', cat:'Huis' },
+  { ar:'شَقَّة', ph:'shaqqa', nl:'Appartement', cat:'Huis' },
+  { ar:'أوضِة', ph:'Ouda', nl:'Kamer', cat:'Huis' },
+  { ar:'سِرير', ph:'siriir', nl:'Bed', cat:'Huis' },
+  { ar:'أباجورَة', ph:'Abajorah', nl:'Lamp', cat:'Huis' },
+  { ar:'كُومودِينو', ph:'Komodino', nl:'Nachtkastje', cat:'Huis' },
+  { ar:'كُرسِي', ph:'Kursi', nl:'Stoel', cat:'Huis' },
+  { ar:'كَنَبَة', ph:'Kanaba', nl:'Bank (meubel)', cat:'Huis' },
+  { ar:'تِليفزون', ph:'Televizyon', nl:'Televisie', cat:'Huis' },
+  { ar:'تَلَّاجَة', ph:'Tallaaga', nl:'Koelkast', cat:'Huis' },
+  { ar:'فُرن', ph:'Furn', nl:'Oven', cat:'Huis' },
+  { ar:'بُوتَجاز', ph:'Bootaaz', nl:'Fornuis', cat:'Huis' },
+  { ar:'حَنَفِيَّة', ph:'Hanafeyya', nl:'Kraan', cat:'Huis' },
+  { ar:'حَلَّة', ph:'Halla', nl:'Pan', cat:'Huis' },
+  { ar:'دُش', ph:'Dush', nl:'Douche', cat:'Huis' },
+  { ar:'بانِيُو', ph:'Banyoo', nl:'Bad', cat:'Huis' },
+  { ar:'غَسَّالَة', ph:'Ghassaala', nl:'Wasmachine', cat:'Huis' },
+  { ar:'غَسَّالِة أطْباق', ph:'Ghassalit Atbaaq', nl:'Vaatwasser', cat:'Huis' },
+  { ar:'نَجَفَة', ph:'Nagafa', nl:'Kroonluchter', cat:'Huis' },
+  { ar:'سِجّادَة', ph:'Siggaada', nl:'Tapijt', cat:'Huis' },
+  // Werkwoorden
+  { ar:'يِصْحَى', ph:'Yis7a', nl:'Wakker worden', cat:'Werkwoord' },
+  { ar:'يِغسِل', ph:'YiGhsil', nl:'Wassen', cat:'Werkwoord' },
+  { ar:'يَاخُد', ph:'Yakhud', nl:'Nemen', cat:'Werkwoord' },
+  { ar:'يِفْطَر', ph:'Yiftar', nl:'Ontbijten', cat:'Werkwoord' },
+  { ar:'يِشتَغَل', ph:'Yishtaghal', nl:'Werken', cat:'Werkwoord' },
+  { ar:'يِنصَح', ph:'Yinsa7', nl:'Adviseren', cat:'Werkwoord' },
+  // Handig
+  { ar:'أيْوَة', ph:'Aywah', nl:'Ja', cat:'Handig' },
+  { ar:'لا', ph:'La', nl:'Nee', cat:'Handig' },
+  { ar:'مِش', ph:'Mish', nl:'Niet', cat:'Handig' },
+  { ar:'لازِم', ph:'Laazim', nl:'Moeten', cat:'Handig' },
+  { ar:'كَمان', ph:'Kaman', nl:'Ook', cat:'Handig' },
+  { ar:'بَعد', ph:'Ba3d', nl:'Na', cat:'Handig' },
+  { ar:'كُل يُوم', ph:'Kul yoom', nl:'Elke dag', cat:'Handig' },
+  { ar:'كبير', ph:'Kibiir', nl:'Groot', cat:'Handig' },
+  { ar:'صُغيَّر', ph:'SuGhayyar', nl:'Klein', cat:'Handig' },
+];
 
-function openLes(les){
-  huidigeLes = les;
-  document.getElementById('lesson-list-wrap').style.display = 'none';
-  document.getElementById('header-sub').textContent = les.titel;
-  const wrap = document.getElementById('lesson-detail-wrap');
-  wrap.style.display = 'block';
-
-  let html = `
-    <div class="back-btn" onclick="sluitLes()">← Alle lessen</div>
-    <div class="lesson-title">${les.icon} ${les.titel}</div>
-    <div class="lesson-desc">${les.beschrijving}</div>
-  `;
-
-  // VOCAB
-  html += `<div class="section-block">
-    <h4>Woorden <span class="tag tag-blue">${les.vocab.length} stuks</span></h4>
-    <table class="vocab-table">
-      <thead><tr><th>Arabisch</th><th>Fonetisch</th><th>Nederlands</th><th></th></tr></thead>
-      <tbody>`;
-  les.vocab.forEach((v,i) => {
-    html += `<tr>
-      <td><span class="ar">${v.ar}</span></td>
-      <td><span class="phon">${v.phon}</span></td>
-      <td><span class="nl">${v.nl}</span></td>
-      <td><button class="play-btn" onclick="speak('${v.ar.replace(/'/g,"\\'")}')">🔊</button></td>
-    </tr>`;
-  });
-  html += `</tbody></table></div>`;
-
-  // ZINNEN
-  html += `<div class="section-block">
-    <h4>Voorbeeldzinnen <span class="tag tag-green">${les.zinnen.length} zinnen</span></h4>`;
-  les.zinnen.forEach(z => {
-    html += `<div class="example-card">
-      <button class="ex-audio" onclick="speak('${z.ar.replace(/'/g,"\\'")}')">🔊</button>
-      <div class="ex-ar">${z.ar}</div>
-      <div class="ex-phon">${z.phon}</div>
-      <div class="ex-nl">${z.nl}</div>
-    </div>`;
-  });
-  html += `</div>`;
-
-  // NOTITIES
-  if(les.notities && les.notities.length){
-    html += `<div class="section-block">
-      <h4>💡 Grammatica & Tips <span class="tag tag-amber">${les.notities.length}</span></h4>`;
-    les.notities.forEach(n => {
-      html += `<div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);">
-        <div style="font-size:13px;font-weight:600;margin-bottom:3px;">${n.titel}</div>
-        <div style="font-size:13px;color:var(--text-sec);line-height:1.5;">${n.tekst}</div>
-      </div>`;
-    });
-    html += `</div>`;
-  }
-
-  // START QUIZ KNOP
-  html += `<button style="width:100%;padding:14px;background:var(--green);color:white;border:none;border-radius:var(--rsm);font-size:15px;font-weight:600;cursor:pointer;margin-top:4px;" onclick="startLesQuiz('${les.id}')">🎯 Oefen deze les</button>`;
-
-  wrap.innerHTML = html;
-  wrap.scrollTop = 0;
-}
-
-function sluitLes(){
-  huidigeLes = null;
-  document.getElementById('lesson-list-wrap').style.display = 'block';
-  document.getElementById('lesson-detail-wrap').style.display = 'none';
-  document.getElementById('header-sub').textContent = 'Kies een les om te beginnen';
-  renderLessenLijst();
-}
-
-// ============================================================
-// QUIZ
-// ============================================================
-function initQuizKeuze(){
-  const wrap = document.getElementById('quiz-content');
-  wrap.innerHTML = `
-    <div style="font-size:15px;font-weight:600;margin-bottom:12px;">Kies een les om te oefenen:</div>
-    ${LESSEN.map(l=>`<div class="lesson-card" onclick="startLesQuiz('${l.id}')">
-      <div class="lesson-icon" style="background:${l.kleur}">${l.icon}</div>
-      <div class="lesson-info"><h3>${l.titel}</h3><p>${l.vocab.length} woorden</p></div>
-    </div>`).join('')}
-    <div class="lesson-card" onclick="startLesQuiz('alles')" style="border-color:var(--green);">
-      <div class="lesson-icon" style="background:var(--green-light)">🌟</div>
-      <div class="lesson-info"><h3>Alles door elkaar</h3><p>${ALL_WORDS.filter(w=>!w.isZin).length} woorden uit alle lessen</p></div>
-    </div>
-  `;
-}
-
-function startLesQuiz(lesId){
-  showMainTab('quiz');
-  quizLes = lesId;
-  quizGoed = 0; quizFout = 0;
-  if(lesId === 'alles'){
-    quizItems = ALL_WORDS.filter(w=>!w.isZin).sort(()=>Math.random()-0.5);
-  } else {
-    const les = LESSEN.find(l=>l.id===lesId);
-    quizItems = [...les.vocab].sort(()=>Math.random()-0.5);
-  }
-  quizIdx = 0;
-  quizType = ['ar2nl','nl2ar','phon2ar'][Math.floor(Math.random()*3)];
-  renderQuiz();
-}
-
-function renderQuiz(){
-  if(quizIdx >= quizItems.length){
-    // einde
-    const wrap = document.getElementById('quiz-content');
-    const pct = Math.round(quizGoed/(quizGoed+quizFout)*100)||0;
-    wrap.innerHTML = `
-      <div class="quiz-q" style="padding:32px 14px;">
-        <div style="font-size:48px;margin-bottom:10px;">${pct>=70?'🎉':'💪'}</div>
-        <div style="font-size:20px;font-weight:700;margin-bottom:6px;">${pct}% goed</div>
-        <div style="font-size:14px;color:var(--text-sec);">${quizGoed} goed · ${quizFout} fout</div>
-      </div>
-      <div class="score-row">
-        <div class="sc"><div class="sc-n g">${quizGoed}</div><div class="sc-l">Goed</div></div>
-        <div class="sc"><div class="sc-n b">${quizFout}</div><div class="sc-l">Fout</div></div>
-      </div>
-      <button class="next-btn" style="display:block;margin-top:12px;" onclick="startLesQuiz(quizLes)">🔄 Opnieuw</button>
-      <button class="next-btn" style="display:block;margin-top:8px;background:var(--bg);color:var(--text);border:1px solid var(--border);" onclick="initQuizKeuze()">← Andere les</button>
-    `;
-    if(quizLes !== 'alles') {
-      voltooid.add(quizLes);
-      localStorage.setItem('lessen_done', JSON.stringify([...voltooid]));
-    }
+function doSearch(q) {
+  const container = document.getElementById('dict-results');
+  const term = q.toLowerCase().trim();
+  const filtered = term === '' ? allWords : allWords.filter(w =>
+    w.nl.toLowerCase().includes(term) ||
+    w.ph.toLowerCase().includes(term) ||
+    w.ar.includes(term) ||
+    w.cat.toLowerCase().includes(term)
+  );
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="no-results">Geen resultaten gevonden voor "' + q + '"</div>';
     return;
   }
+  container.innerHTML = '<div class="card" style="padding:0;overflow:hidden">' +
+    filtered.map(w =>
+      '<div class="dict-row">' +
+      '<div class="dict-ar">' + w.ar + '</div>' +
+      '<div class="dict-info"><div class="dict-nl">' + w.nl + '</div><div class="dict-ph">' + w.ph + '</div></div>' +
+      '<div class="dict-cat">' + w.cat + '</div>' +
+      '<button class="audio-btn" onclick="speak(\'' + w.ar.replace(/'/g,"\\'") + '\',\'ar-EG\')" style="flex-shrink:0">▶</button>' +
+      '</div>'
+    ).join('') +
+    '</div>';
+}
 
-  quizBeantwoord = false;
-  const item = quizItems[quizIdx];
-  // random quiz type per vraag
-  quizType = ['ar2nl','nl2ar','phon2ar'][Math.floor(Math.random()*3)];
+// QUIZ
+const quizData = [
+  { type:'ar-nl', ar:'أنا', ph:'Anaa', correct:'Ik', opts:['Ik','Jij','Hij','Wij'] },
+  { type:'ar-nl', ar:'هُوَّ', ph:'Huwwa', correct:'Hij', opts:['Zij','Hij','Wij','Jullie'] },
+  { type:'ar-nl', ar:'هِيَ', ph:'Heyya', correct:'Zij', opts:['Hij','Zij','Ik','Wij'] },
+  { type:'ar-nl', ar:'كيف', ph:'Kaif', correct:'Hoe', opts:['Hoe','Wat','Wie','Waar'] },
+  { type:'ar-nl', ar:'فين', ph:'Fain', correct:'Waar', opts:['Waar','Wie','Hoe','Waarom'] },
+  { type:'ar-nl', ar:'مين', ph:'Miin', correct:'Wie', opts:['Wat','Hoe','Wie','Waar'] },
+  { type:'ar-nl', ar:'ليه', ph:'Laih', correct:'Waarom', opts:['Wanneer','Waarom','Hoe','Wie'] },
+  { type:'ar-nl', ar:'جِد', ph:'Ged', correct:'Opa', opts:['Opa','Oma','Vader','Oom'] },
+  { type:'ar-nl', ar:'أُم', ph:'Om', correct:'Moeder', opts:['Dochter','Oma','Moeder','Tante'] },
+  { type:'ar-nl', ar:'وَلَد', ph:'Walad', correct:'Zoon', opts:['Vader','Opa','Dochter','Zoon'] },
+  { type:'ar-nl', ar:'بِنت', ph:'Bint', correct:'Dochter', opts:['Oma','Dochter','Moeder','Zus'] },
+  { type:'ar-nl', ar:'سِرير', ph:'siriir', correct:'Bed', opts:['Stoel','Bed','Tafel','Bank'] },
+  { type:'ar-nl', ar:'تَلَّاجَة', ph:'Tallaaga', correct:'Koelkast', opts:['Oven','Wasmachine','Koelkast','Fornuis'] },
+  { type:'ar-nl', ar:'كَنَبَة', ph:'Kanaba', correct:'Bank', opts:['Stoel','Tapijt','Bank','Tafel'] },
+  { type:'ar-nl', ar:'دُش', ph:'Dush', correct:'Douche', opts:['Bad','Toilet','Douche','Wasmachine'] },
+  { type:'ar-nl', ar:'يِصْحَى', ph:'Yis7a', correct:'Wakker worden', opts:['Werken','Slapen','Wakker worden','Ontbijten'] },
+  { type:'ar-nl', ar:'يِفْطَر', ph:'Yiftar', correct:'Ontbijten', opts:['Ontbijten','Wassen','Werken','Slapen'] },
+  { type:'nl-ar', question:'Hoe zeg je "Wij" in het Arabisch?', correct:'إحنا', opts:['أنا','إحنا','هُمَ','إنتُم'] },
+  { type:'nl-ar', question:'Hoe zeg je "Waarom" in het Arabisch?', correct:'ليه', opts:['فين','مين','ليه','كيف'] },
+  { type:'nl-ar', question:'Hoe zeg je "Oma" in het Arabisch?', correct:'جِدَّة', opts:['جِد','أُم','جِدَّة','بِنت'] },
+  { type:'nl-ar', question:'Hoe zeg je "Koelkast" in het Arabisch?', correct:'تَلَّاجَة', opts:['فُرن','تَلَّاجَة','غَسَّالَة','بُوتَجاز'] },
+  { type:'nl-ar', question:'Hoe zeg je "Douche" in het Arabisch?', correct:'دُش', opts:['بانِيُو','دُش','حَنَفِيَّة','غَسَّالَة'] },
+  { type:'ph-ar', question:'Wat is de Arabische schrijfwijze van "Huwwa"?', correct:'هُوَّ', opts:['هِيَ','هُمَ','هُوَّ','إنتُم'] },
+  { type:'ph-ar', question:'Wat is de Arabische schrijfwijze van "Aywah"?', correct:'أيْوَة', opts:['لا','أيْوَة','مِش','لازِم'] },
+  { type:'ph-ar', question:'Wat is de Arabische schrijfwijze van "Kanaba"?', correct:'كَنَبَة', opts:['كُرسِي','سِجّادَة','كَنَبَة','نَجَفَة'] },
+];
 
-  // vraag tekst
-  let vraagTekst='', vraagClass='', vraagSub='';
-  if(quizType==='ar2nl'){
-    vraagTekst=item.ar; vraagClass='q-main ar'; vraagSub='Wat betekent dit in het Nederlands?';
-  } else if(quizType==='nl2ar'){
-    vraagTekst=item.nl; vraagClass='q-main'; vraagSub='Hoe schrijf je dit in het Arabisch?';
+let quizShuffled = [], currentQ = 0, score = 0, answered = false;
+
+function startQuiz() {
+  quizShuffled = [...quizData].sort(() => Math.random() - 0.5);
+  currentQ = 0; score = 0; answered = false;
+  document.getElementById('quiz-main').style.display = 'block';
+  document.getElementById('quiz-result').style.display = 'none';
+  loadQ();
+}
+
+function loadQ() {
+  answered = false;
+  const q = quizShuffled[currentQ];
+  document.getElementById('q-counter').textContent = 'Vraag ' + (currentQ+1) + ' van ' + quizShuffled.length;
+  document.getElementById('q-score').textContent = 'Score: ' + score;
+  document.getElementById('q-prog').style.width = Math.round(((currentQ+1)/quizShuffled.length)*100) + '%';
+
+  const txt = document.getElementById('q-text');
+  const arDiv = document.getElementById('q-arabic');
+
+  if (q.type === 'ar-nl') {
+    txt.textContent = 'Wat betekent dit Arabische woord?';
+    arDiv.style.display = 'block';
+    arDiv.textContent = q.ar;
   } else {
-    vraagTekst=item.phon; vraagClass='q-main'; vraagSub='Welke Arabische letter/woord hoort hierbij?';
+    txt.textContent = q.question;
+    arDiv.style.display = 'none';
   }
 
-  // antwoorden
-  const pool = (quizLes==='alles' ? ALL_WORDS.filter(w=>!w.isZin) : LESSEN.find(l=>l.id===quizLes).vocab)
-    .filter(w=>w.ar!==item.ar).sort(()=>Math.random()-0.5).slice(0,3);
-  const opties = [item, ...pool].sort(()=>Math.random()-0.5);
+  const fb = document.getElementById('q-feedback');
+  fb.style.display = 'none'; fb.className = 'q-feedback';
+  document.getElementById('q-next').style.display = 'none';
 
-  const wrap = document.getElementById('quiz-content');
-  wrap.innerHTML = `
-    <div style="font-size:11px;color:var(--text-sec);margin-bottom:8px;text-align:right;">Vraag ${quizIdx+1} / ${quizItems.length}</div>
-    <div class="quiz-q">
-      <div class="q-label">${vraagSub}</div>
-      <div class="${vraagClass}">${vraagTekst}</div>
-      ${quizType==='ar2nl' ? `<button style="margin-top:8px;background:none;border:none;cursor:pointer;color:var(--green);font-size:15px;" onclick="speak('${item.ar.replace(/'/g,"\\'")}')">🔊 Hoor uitspraak</button>` : ''}
-    </div>
-    <div class="opts">
-      ${opties.map(o => {
-        const antwoord = quizType==='ar2nl' ? o.nl : quizType==='nl2ar' ? `<span class="opt-ar">${o.ar}</span>${o.phon}` : `<span class="opt-ar">${o.ar}</span>`;
-        return `<button class="opt" data-ar="${o.ar}" onclick="checkQuiz(this,'${item.ar.replace(/'/g,"\\'")}','${o.ar.replace(/'/g,"\\'")}')">
-          ${antwoord}
-        </button>`;
-      }).join('')}
-    </div>
-    <div class="fb" id="quiz-fb"></div>
-    <button class="next-btn" id="quiz-next" onclick="volgendeQuiz()">Volgende →</button>
-    <div class="score-row">
-      <div class="sc"><div class="sc-n g" id="qg">${quizGoed}</div><div class="sc-l">Goed</div></div>
-      <div class="sc"><div class="sc-n b" id="qf">${quizFout}</div><div class="sc-l">Fout</div></div>
-    </div>
-  `;
-  wrap.scrollTop = 0;
+  const optsDiv = document.getElementById('q-opts');
+  optsDiv.innerHTML = '';
+  const shuffled = [...q.opts].sort(() => Math.random() - 0.5);
+  shuffled.forEach(o => {
+    const btn = document.createElement('button');
+    btn.className = 'q-opt';
+    btn.textContent = o;
+    btn.onclick = () => answer(o, q);
+    optsDiv.appendChild(btn);
+  });
 }
 
-function checkQuiz(btn, correctAr, gekozenAr){
-  if(quizBeantwoord) return;
-  quizBeantwoord = true;
-  speak(correctAr);
-  const fb = document.getElementById('quiz-fb');
-  const correct = gekozenAr === correctAr;
-  if(correct){ btn.classList.add('correct'); quizGoed++; fb.textContent='✓ Correct!'; fb.className='fb ok'; }
-  else {
-    btn.classList.add('wrong'); quizFout++;
-    document.querySelectorAll('.opt').forEach(b=>{ if(b.dataset.ar===correctAr) b.classList.add('correct'); });
-    const correctItem = quizItems.find(i=>i.ar===correctAr);
-    fb.textContent = `✗ Het was: ${correctAr} — ${correctItem?correctItem.nl:''}`;
-    fb.className='fb fout';
+function answer(chosen, q) {
+  if (answered) return;
+  answered = true;
+  const correct = q.correct;
+  document.querySelectorAll('.q-opt').forEach(b => {
+    b.classList.add('disabled');
+    if (b.textContent === correct) b.classList.add('correct');
+    else if (b.textContent === chosen && chosen !== correct) b.classList.add('wrong');
+  });
+  const fb = document.getElementById('q-feedback');
+  if (chosen === correct) {
+    score++;
+    fb.className = 'q-feedback correct';
+    fb.textContent = '✓ Goed! ' + (q.type==='ar-nl' ? q.ar + ' = ' + correct + ' (' + q.ph + ')' : correct + ' is het juiste antwoord.');
+  } else {
+    fb.className = 'q-feedback wrong';
+    fb.textContent = '✗ Het goede antwoord is: ' + correct + (q.ph ? ' (' + q.ph + ')' : '') + '.';
   }
-  fb.style.display='block';
-  document.getElementById('quiz-next').style.display='block';
-  document.getElementById('qg').textContent = quizGoed;
-  document.getElementById('qf').textContent = quizFout;
+  fb.style.display = 'block';
+  document.getElementById('q-score').textContent = 'Score: ' + score;
+  const nxt = document.getElementById('q-next');
+  nxt.style.display = 'block';
+  nxt.textContent = currentQ < quizShuffled.length-1 ? 'Volgende vraag →' : 'Bekijk resultaat →';
 }
 
-function volgendeQuiz(){ quizIdx++; renderQuiz(); }
-
-// ============================================================
-// WOORDENBOEK
-// ============================================================
-function renderZoek(q){
-  const res = document.getElementById('zoek-results');
-  if(!q){ res.innerHTML = `<div style="font-size:13px;color:var(--text-sec);text-align:center;padding:20px;">Typ een woord om te zoeken…</div>`; return; }
-  const ql = q.toLowerCase();
-  const hits = ALL_WORDS.filter(w=>
-    w.ar.includes(q) || w.phon.toLowerCase().includes(ql) || w.nl.toLowerCase().includes(ql)
-  ).slice(0,30);
-  if(!hits.length){ res.innerHTML=`<div style="font-size:13px;color:var(--text-sec);padding:12px;">Niets gevonden voor "${q}"</div>`; return; }
-  res.innerHTML = hits.map(w=>`
-    <div class="example-card" style="cursor:pointer;" onclick="speak('${w.ar.replace(/'/g,"\\'")}')">
-      <div style="float:right;color:var(--text-sec);font-size:10px;">${w.les}</div>
-      <div class="ex-ar">${w.ar}</div>
-      <div class="ex-phon">${w.phon}</div>
-      <div class="ex-nl">${w.nl}</div>
-    </div>
-  `).join('');
+function nextQ() {
+  currentQ++;
+  if (currentQ >= quizShuffled.length) { showResult(); return; }
+  loadQ();
 }
 
-document.getElementById('zoek-input').addEventListener('input', e => renderZoek(e.target.value.trim()));
+function showResult() {
+  document.getElementById('quiz-main').style.display = 'none';
+  document.getElementById('quiz-result').style.display = 'block';
+  const pct = Math.round((score/quizShuffled.length)*100);
+  document.getElementById('r-score').textContent = score + '/' + quizShuffled.length;
+  document.getElementById('r-msg').textContent = pct>=80 ? 'Uitstekend! Je kent de stof goed.' : pct>=60 ? 'Goed bezig! Herhaal de moeilijke woorden.' : 'Blijf oefenen! Lees de lessen nog eens door.';
+  document.getElementById('r-detail').innerHTML = pct + '% correct — ' + score + ' goed, ' + (quizShuffled.length-score) + ' fout.';
+}
 
-// ============================================================
-// INIT
-// ============================================================
-renderLessenLijst();
-if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+doSearch('');
 </script>
 </body>
 </html>
